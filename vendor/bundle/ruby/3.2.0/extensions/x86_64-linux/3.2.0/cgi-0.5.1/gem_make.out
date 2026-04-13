@@ -1,0 +1,18 @@
+current directory: /home/navelan.e/RubyApp/App/vendor/bundle/ruby/3.2.0/gems/cgi-0.5.1/ext/cgi/escape
+/home/navelan.e/.rvm/rubies/ruby-3.2.2/bin/ruby extconf.rb
+creating Makefile
+
+current directory: /home/navelan.e/RubyApp/App/vendor/bundle/ruby/3.2.0/gems/cgi-0.5.1/ext/cgi/escape
+make DESTDIR\= sitearchdir\=./.gem.20260413-48199-p5wfcc sitelibdir\=./.gem.20260413-48199-p5wfcc clean
+
+current directory: /home/navelan.e/RubyApp/App/vendor/bundle/ruby/3.2.0/gems/cgi-0.5.1/ext/cgi/escape
+make DESTDIR\= sitearchdir\=./.gem.20260413-48199-p5wfcc sitelibdir\=./.gem.20260413-48199-p5wfcc
+compiling escape.c
+linking shared-object cgi/escape.so
+
+current directory: /home/navelan.e/RubyApp/App/vendor/bundle/ruby/3.2.0/gems/cgi-0.5.1/ext/cgi/escape
+make DESTDIR\= sitearchdir\=./.gem.20260413-48199-p5wfcc sitelibdir\=./.gem.20260413-48199-p5wfcc install
+/usr/bin/install -m 0755 escape.so ./.gem.20260413-48199-p5wfcc/cgi
+
+current directory: /home/navelan.e/RubyApp/App/vendor/bundle/ruby/3.2.0/gems/cgi-0.5.1/ext/cgi/escape
+make DESTDIR\= sitearchdir\=./.gem.20260413-48199-p5wfcc sitelibdir\=./.gem.20260413-48199-p5wfcc clean
