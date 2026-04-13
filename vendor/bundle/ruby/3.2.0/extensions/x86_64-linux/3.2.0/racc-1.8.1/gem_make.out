@@ -1,0 +1,18 @@
+current directory: /home/navelan.e/RubyApp/App/vendor/bundle/ruby/3.2.0/gems/racc-1.8.1/ext/racc/cparse
+/home/navelan.e/.rvm/rubies/ruby-3.2.2/bin/ruby extconf.rb
+creating Makefile
+
+current directory: /home/navelan.e/RubyApp/App/vendor/bundle/ruby/3.2.0/gems/racc-1.8.1/ext/racc/cparse
+make DESTDIR\= sitearchdir\=./.gem.20260413-38917-neg8gg sitelibdir\=./.gem.20260413-38917-neg8gg clean
+
+current directory: /home/navelan.e/RubyApp/App/vendor/bundle/ruby/3.2.0/gems/racc-1.8.1/ext/racc/cparse
+make DESTDIR\= sitearchdir\=./.gem.20260413-38917-neg8gg sitelibdir\=./.gem.20260413-38917-neg8gg
+compiling cparse.c
+linking shared-object racc/cparse.so
+
+current directory: /home/navelan.e/RubyApp/App/vendor/bundle/ruby/3.2.0/gems/racc-1.8.1/ext/racc/cparse
+make DESTDIR\= sitearchdir\=./.gem.20260413-38917-neg8gg sitelibdir\=./.gem.20260413-38917-neg8gg install
+/usr/bin/install -m 0755 cparse.so ./.gem.20260413-38917-neg8gg/racc
+
+current directory: /home/navelan.e/RubyApp/App/vendor/bundle/ruby/3.2.0/gems/racc-1.8.1/ext/racc/cparse
+make DESTDIR\= sitearchdir\=./.gem.20260413-38917-neg8gg sitelibdir\=./.gem.20260413-38917-neg8gg clean
