@@ -1,0 +1,13 @@
+# Read about fixtures at https://api.rubyonrails.org/classes/ActiveRecord/FixtureSet.html
+
+one:
+  record: one
+  summary_text: MyString
+  customer_notes: MyString
+  completed_at: 2026-04-13 16:12:51
+
+two:
+  record: two
+  summary_text: MyString
+  customer_notes: MyString
+  completed_at: 2026-04-13 16:12:51

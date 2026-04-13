@@ -1,0 +1,15 @@
+# Read about fixtures at https://api.rubyonrails.org/classes/ActiveRecord/FixtureSet.html
+
+one:
+  vehicle: one
+  mechanic: one
+  status: MyString
+  total_cost: 1
+  internal_notes: MyString
+
+two:
+  vehicle: two
+  mechanic: two
+  status: MyString
+  total_cost: 1
+  internal_notes: MyString

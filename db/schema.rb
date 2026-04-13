@@ -1,0 +1,113 @@
+# This file is auto-generated from the current state of the database. Instead
+# of editing this file, please use the migrations feature of Active Record to
+# incrementally modify your database, and then regenerate this schema definition.
+#
+# This file is the source Rails uses to define your schema when running `bin/rails
+# db:schema:load`. When creating a new database, `bin/rails db:schema:load` tends to
+# be faster and is potentially less error prone than running all of your
+# migrations from scratch. Old migrations may fail to apply correctly if those
+# migrations use external dependencies or application code.
+#
+# It's strongly recommended that you check this file into your version control system.
+
+ActiveRecord::Schema[7.1].define(version: 2026_04_13_112850) do
+  # These are extensions that must be enabled in order to support this database
+  enable_extension "plpgsql"
+
+  create_table "customers", force: :cascade do |t|
+    t.string "name"
+    t.string "phone"
+    t.string "email"
+    t.datetime "created_at", null: false
+    t.datetime "updated_at", null: false
+  end
+
+  create_table "mechanics", force: :cascade do |t|
+    t.string "name"
+    t.integer "experience"
+    t.datetime "created_at", null: false
+    t.datetime "updated_at", null: false
+  end
+
+  create_table "parts", force: :cascade do |t|
+    t.string "name"
+    t.decimal "price"
+    t.integer "stock"
+    t.datetime "created_at", null: false
+    t.datetime "updated_at", null: false
+  end
+
+  create_table "records", force: :cascade do |t|
+    t.bigint "vehicle_id", null: false
+    t.bigint "mechanic_id", null: false
+    t.string "status"
+    t.integer "total_cost"
+    t.string "internal_notes"
+    t.datetime "created_at", null: false
+    t.datetime "updated_at", null: false
+    t.index ["mechanic_id"], name: "index_records_on_mechanic_id"
+    t.index ["vehicle_id"], name: "index_records_on_vehicle_id"
+  end
+
+  create_table "reviews", force: :cascade do |t|
+    t.string "content"
+    t.string "reviewable_type", null: false
+    t.bigint "reviewable_id", null: false
+    t.datetime "created_at", null: false
+    t.datetime "updated_at", null: false
+    t.index ["reviewable_type", "reviewable_id"], name: "index_reviews_on_reviewable"
+  end
+
+  create_table "service_parts", force: :cascade do |t|
+    t.bigint "record_id", null: false
+    t.bigint "part_id", null: false
+    t.integer "quantity"
+    t.datetime "created_at", null: false
+    t.datetime "updated_at", null: false
+    t.index ["part_id"], name: "index_service_parts_on_part_id"
+    t.index ["record_id"], name: "index_service_parts_on_record_id"
+  end
+
+  create_table "service_tags", force: :cascade do |t|
+    t.bigint "record_id", null: false
+    t.bigint "tag_id", null: false
+    t.datetime "created_at", null: false
+    t.datetime "updated_at", null: false
+    t.index ["record_id"], name: "index_service_tags_on_record_id"
+    t.index ["tag_id"], name: "index_service_tags_on_tag_id"
+  end
+
+  create_table "summaries", force: :cascade do |t|
+    t.bigint "record_id", null: false
+    t.string "summary_text"
+    t.string "customer_notes"
+    t.datetime "completed_at"
+    t.datetime "created_at", null: false
+    t.datetime "updated_at", null: false
+    t.index ["record_id"], name: "index_summaries_on_record_id"
+  end
+
+  create_table "tags", force: :cascade do |t|
+    t.string "tag"
+    t.datetime "created_at", null: false
+    t.datetime "updated_at", null: false
+  end
+
+  create_table "vehicles", force: :cascade do |t|
+    t.bigint "customer_id", null: false
+    t.string "model"
+    t.string "number_plate"
+    t.datetime "created_at", null: false
+    t.datetime "updated_at", null: false
+    t.index ["customer_id"], name: "index_vehicles_on_customer_id"
+  end
+
+  add_foreign_key "records", "mechanics"
+  add_foreign_key "records", "vehicles"
+  add_foreign_key "service_parts", "parts"
+  add_foreign_key "service_parts", "records"
+  add_foreign_key "service_tags", "records"
+  add_foreign_key "service_tags", "tags"
+  add_foreign_key "summaries", "records"
+  add_foreign_key "vehicles", "customers"
+end
