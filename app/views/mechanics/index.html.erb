@@ -1,0 +1,14 @@
+<h1>Mechanics</h1>
+
+<%= form_with url: mechanics_path, method: :get do %>
+  <%= text_field_tag :q, params[:q], placeholder: "Search mechanics..." %>
+  <%= submit_tag "Search" %>
+<% end %>
+<%= link_to 'New Mechanic', new_mechanic_path %>
+<hr>
+
+<% @mechanics.each do |mechanic| %>
+  <p><%= mechanic.name %></p>
+  <%= button_to "Delete", mechanic_path(mechanic), method: :delete %>
+  <hr>
+<% end %>

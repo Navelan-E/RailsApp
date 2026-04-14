@@ -1,4 +1,20 @@
 Rails.application.routes.draw do
+  get 'vehicles/index'
+  get 'vehicles/show'
+  get 'vehicles/new'
+  get 'vehicles/edit'
+  get 'records/index'
+  get 'records/show'
+  get 'records/new'
+  get 'records/edit'
+  get 'customers/index'
+  get 'customers/show'
+  get 'customers/new'
+  get 'customers/edit'
+  get 'mechanics/index'
+  get 'mechanics/show'
+  get 'mechanics/new'
+  get 'mechanics/edit'
   # Define your application routes per the DSL in https://guides.rubyonrails.org/routing.html
 
   # Reveal health status on /up that returns 200 if the app boots with no exceptions, otherwise 500.
@@ -11,4 +27,10 @@ Rails.application.routes.draw do
 
   # Defines the root path route ("/")
   # root "posts#index"
+
+  resources :mechanics
+  resources :vehicles
+  resources :customers
+  resources :records
+  
 end

@@ -1,0 +1,35 @@
+<h1>Records#new</h1>
+<p>Find me in app/views/records/new.html.erb</p>
+<h1>New Record</h1>
+
+<%= form_with model: @record do |form| %>
+  <div>
+    <%= form.label :Issues %><br>
+    <%= form.text_area :internal_notes %>
+  </div>
+
+  <div>
+    <%= form.label :Vehicle_No %><br>
+    <%= form.text_field :vehicle_no %>
+  </div>
+  <div>
+    <%= form.label :Model %><br>
+    <%= form.text_field :model %>
+  </div>
+  <div>
+    <%= form.label :Customer_name %><br>
+    <%= form.text_field :customer_name %>
+  </div>
+  <div>
+    <%= form.label :Customer_phone %><br>
+    <%= form.text_field :customer_phone %>
+  </div>
+  <div>
+    <%= form.label :Customer_email %><br>
+    <%= form.text_field :customer_email %>
+  </div>
+  <div>
+    <%= form.submit "Create record" %>
+  </div>
+<% end %>
+ 
