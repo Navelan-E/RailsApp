@@ -1,2 +1,26 @@
 <h1>Records#edit</h1>
 <p>Find me in app/views/records/edit.html.erb</p>
+<%= form_with model: @record do |form| %>
+  <div>
+    <%= form.label :internal_notes %><br>
+    <%= form.text_area :internal_notes %>
+  </div>
+  <div>
+    <%= form.label :status %><br>
+    <%= form.select :status, Record.statuses.keys.map { |status| [status.humanize, status] } %>
+  </div>
+  <div>
+    <%= form.label :mechanic_id, "Assign Mechanic" %><br>
+    <%= form.collection_select :mechanic_id, @mechanics, :id, :name, include_blank: true %>
+  </div>
+  <div>
+    <%= form.label :total_cost %><br>
+    <%= form.text_area :total_cost %>
+  </div>
+  <div>
+    <%= link_to 'Add Mechanic', mechanics_new_path %>
+  </div>
+  <div>
+    <%= form.submit "Update Record" %>
+  </div>
+<% end %>

@@ -2,7 +2,7 @@ class MechanicsController < ApplicationController
 
     def index
         if params[:q].present?
-            @mechanics = Mechanic.where("name LIKE ?", "%#{params[:q].downcase}%")
+            @mechanics = Mechanic.where("name ILIKE ?", "%#{params[:q]}%")
         else
             @mechanics = Mechanic.all
         end
@@ -17,6 +17,7 @@ class MechanicsController < ApplicationController
         if @mechanic.save
             redirect_to mechanics_path, notice: 'Mechanic was successfully created.'
         else
+            @pop= @mechanic.errors.full_messages
             render :new
         end
     end

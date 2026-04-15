@@ -10,4 +10,5 @@ class CreateRecords < ActiveRecord::Migration[7.1]
       t.timestamps
     end
   end
+  change_column_null :records, :mechanic_id, true
 end

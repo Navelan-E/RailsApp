@@ -1,2 +1,25 @@
 <h1>Records#show</h1>
 <p>Find me in app/views/records/show.html.erb</p>
+<div>
+  <h2>Record Details</h2>
+  <p>Vehicle: <%= @record.vehicle.number_plate %> - <%= @record.vehicle.model %></p>
+  <p>Customer: <%= @record.customer.name %> - <%= @record.customer.phone %></p>
+  <p>Status: <%= @record.status %></p>
+  <p>Issue: <%= @record.internal_notes %></p>
+  <p>Assigned Mechanic: <%= @record.mechanic&.name || "Unassigned" %></p>
+  <p>Total Cost: <%= @record.total_cost || "Not Calculated" %></p>
+</div>
+
+<div>
+  <h3>Comments = <%= @record.review.count %></h3>
+  <% @record.review.each do |comment| %>
+    <div>
+      <p><strong><%= comment.user.name %>:</strong> <%= comment.content %></p>
+    </div>
+  <% end %>
+</div>
+<div>
+  <%= link_to 'Edit Record', edit_record_path(@record) %>
+  <%= link_to 'Back to Records', records_path %>
+</div>
+

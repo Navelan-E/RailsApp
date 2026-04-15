@@ -1,3 +1,21 @@
 <h1>Records#index</h1>
 <p>Find me in app/views/records/index.html.erb</p>
+<%= form_with url: records_path, method: :get do %>
+  <%= text_field_tag :q, params[:q], placeholder: "Search records..." %>
+  <%= submit_tag "Search" %>
+<% end %>
 <%= link_to 'New Record', records_new_path %>
+<hr>
+<% @records.each do |record| %>
+  <div>
+    <h2><%= link_to "Record ##{record.id}", record_path(record) %></h2>
+    <p>Vehicle: <%= record.vehicle.number_plate %> - <%= record.vehicle.model %></p>
+    <p>Customer: <%= record.customer.name %> - <%= record.customer.phone %></p>
+    <p>Status: <%= record.status %></p>
+    <p>Issue: <%= record.internal_notes %></p>
+    <p>Assigned Mechanic: <%= record.mechanic&.name || "Unassigned" %></p>
+    <%= link_to 'Edit', edit_record_path(record) %>
+    <%= link_to 'Show', record_path(record) %>
+  </div>
+  <hr>
+<% end %>
