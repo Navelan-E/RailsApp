@@ -7,7 +7,15 @@
   </div>
   <div>
     <%= form.label :status %><br>
-    <%= form.select :status, Record.statuses.keys.map { |status| [status.humanize, status] } %>
+    <%= form.select :status, Record.statuses.keys.map { |status| [status.humanize, status] },
+    { include_blank: "Select Status" },
+    { id: "status-select", onchange: "toggleSummary()" } %>
+  </div>
+  <div id="summary-section" <%= "hidden" unless @record.status == "completed" %>>>
+    <div>
+      <%= form.label :summary, "Summary" %><br>
+      <%= form.text_area :summary %>
+    </div>
   </div>
   <div>
     <%= form.label :mechanic_id, "Assign Mechanic" %><br>
@@ -18,9 +26,24 @@
     <%= form.text_area :total_cost %>
   </div>
   <div>
-    <%= link_to 'Add Mechanic', mechanics_new_path %>
+    <%= link_to 'Add Mechanic', new_mechanic_path(return_to: request.fullpath) %>
   </div>
   <div>
     <%= form.submit "Update Record" %>
   </div>
 <% end %>
+<script>
+  function toggleSummary() {
+    const statusSelect = document.getElementById("status-select");
+    const summaryField = document.getElementById("summary-section");
+    console.log("Status changed to:", statusSelect.value);
+    if (statusSelect.value === "completed") {
+      summaryField.style.display = "block";
+    } else {
+      summaryField.style.display = "none";
+    }
+  }
+  document.addEventListener("DOMContentLoaded", function() {
+    toggleSummary();
+  });
+</script>

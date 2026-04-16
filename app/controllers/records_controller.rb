@@ -45,7 +45,7 @@ class RecordsController < ApplicationController
     if @record.save
       redirect_to records_path, notice: "Record created successfully"
     else
-      Rails.logger.error(@record.errors.full_messages)
+      flash.now[:alert] = @record.errors.full_messages.join(", ")
       render :new, status: :unprocessable_entity
     end
   end
@@ -59,9 +59,11 @@ class RecordsController < ApplicationController
     @record = Record.find(params[:id])
     param = params[:record].permit(:internal_notes, :status, :mechanic_id, :total_cost)
     puts "Update Params: #{param}"
-    if @record.update(param)
+    if @record.update(param) &&param[:status] == "completed"
+      @record.summary.update(customer_notes: params[:record][:summary])
       redirect_to records_path, notice: "Record updated successfully"
     else
+      @mechanics = Mechanic.all
       render :edit, status: :unprocessable_entity
     end
   end

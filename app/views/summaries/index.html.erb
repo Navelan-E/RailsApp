@@ -1,0 +1,16 @@
+<h1>Summaries#index</h1>
+<p>Find me in app/views/summaries/index.html.erb</p>
+<%= link_to 'Back', home_index_path %>
+
+<% @summary.each do |summary| %>
+  <div>
+    <h2><%= link_to "Summaries ##{summary.id}", summary_path(summary) %></h2>
+    <p>Vehicle: <%= summary.record.vehicle.number_plate %> - <%= summary.record.vehicle.model %></p>
+    <p>Customer: <%= summary.record.vehicle.customer.name %> - <%= summary.record.vehicle.customer.phone %></p>
+    <p>Issue: <%= summary.summary_text %></p>
+    <p>Assigned Mechanic: <%= summary.record.mechanic&.name || "Unassigned" %></p>
+    <p>Customer Notes: <%= summary.customer_notes %></p>
+    <%= link_to 'Show', summary_path(summary) %>
+  </div>
+  <hr>
+<% end %>

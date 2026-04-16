@@ -14,11 +14,16 @@ class MechanicsController < ApplicationController
 
     def create
         @mechanic = Mechanic.new(mechanic_params)
+
         if @mechanic.save
-            redirect_to mechanics_path, notice: 'Mechanic was successfully created.'
+            if params[:return_to].present?
+                redirect_to params[:return_to], notice: "Mechanic created successfully"
+            else
+                redirect_back(fallback_location: :records_path, notice: "Mechanic created successfully")
+            end
         else
-            @pop= @mechanic.errors.full_messages
-            render :new
+            flash.now[:alert] = @mechanic.errors.full_messages.join(", ")
+            render :new, status: :unprocessable_entity
         end
     end
 

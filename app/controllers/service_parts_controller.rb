@@ -1,0 +1,2 @@
+class ServicePartsController < ApplicationController
+end

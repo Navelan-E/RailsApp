@@ -1,0 +1,45 @@
+Customer
+  has_many :vehicles
+
+Vehicle
+  belongs_to :customer
+  has_many :records
+  has_many :reviews, as: :reviewable
+
+Record
+  belongs_to :vehicle
+  belongs_to :mechanic
+
+  has_one :customer, through: :vehicle
+  has_one :summary
+
+  has_many :service_parts
+  has_many :parts, through: :service_parts
+  has_many :reviews
+
+  has_and_belongs_to_many :tags
+
+Mechanic
+  has_many :records
+  has_many :reviews, as: :reviewable
+
+Part
+  has_many :service_parts
+  has_many :records, through: :service_parts
+
+ServicePart
+  belongs_to :record
+  belongs_to :part
+
+Summary
+  belongs_to :record
+
+Review
+  belongs_to :reviewable, polymorphic: true
+
+Tag
+  has_and_belongs_to_many :records
+
+ServiceTag
+  belongs_to :record
+  belongs_to :tag

@@ -11,10 +11,10 @@
 </div>
 
 <div>
-  <h3>Comments = <%= @record.review.count %></h3>
-  <% @record.review.each do |comment| %>
+  <h3>Comments = <%= @record.reviews.count %></h3>
+  <% @record.reviews.each do |review| %>
     <div>
-      <p><strong><%= comment.user.name %>:</strong> <%= comment.content %></p>
+      <p><strong><%= review.user.name %>:</strong> <%= review.content %></p>
     </div>
   <% end %>
 </div>

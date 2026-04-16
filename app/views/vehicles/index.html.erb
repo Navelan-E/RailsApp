@@ -1,2 +1,13 @@
 <h1>Vehicles#index</h1>
 <p>Find me in app/views/vehicles/index.html.erb</p>
+<%= form_with url: vehicles_path, method: :get do %>
+  <%= text_field_tag :q, params[:q], placeholder: "Search records..." %>
+  <%= submit_tag "Search" %>
+<% end %>
+<% @vehicles.each do |vehicle| %>
+  <p><%= vehicle.number_plate %></p>
+  <p><%= vehicle.model %></p>
+  <p><%= link_to 'View Details', vehicles_show_path(vehicle.id) %></p>
+<% end %>
+<hr>
+<%= link_to 'Back', home_index_path %>

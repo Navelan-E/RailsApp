@@ -1,0 +1,11 @@
+<h1>Summaries#show</h1>
+<p>Find me in app/views/summaries/show.html.erb</p>
+<div>
+    <p>Vehicle: <%= @summary.record.vehicle.number_plate %> - <%= @summary.record.vehicle.model %></p>
+    <p>Customer: <%= @summary.record.vehicle.customer.name %> - <%= @summary.record.vehicle.customer.phone %></p>
+    <p>Issue: <%= @summary.summary_text %></p>
+    <p>Assigned Mechanic: <%= @summary.record.mechanic&.name || "Unassigned" %></p>
+    <p>Customer Notes: <%= @summary.customer_notes %></p>
+    <p>Total Cost: <%= @summary.record.total_cost || "Not Calculated" %></p>
+  </div>
+    <%= link_to 'Add Review', new_review_path(record_id: @summary.record_id) %>

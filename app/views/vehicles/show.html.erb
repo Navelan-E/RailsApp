@@ -1,2 +1,9 @@
 <h1>Vehicles#show</h1>
 <p>Find me in app/views/vehicles/show.html.erb</p>
+<p><%= @vehicle.number_plate %></p>
+<p><%= @vehicle.model %></p>
+Records:
+<% @records.each do |record| %>
+    <p><%= record.content %></p>
+  <% end %>
+<% link_to 'Back', vehicles_path %>

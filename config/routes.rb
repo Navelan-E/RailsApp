@@ -1,4 +1,20 @@
 Rails.application.routes.draw do
+  get 'home/index'
+  get 'reviews/index'
+  get 'reviews/show'
+  get 'reviews/new'
+  get 'reviews/edit'
+  get 'summaries/index'
+  get 'summaries/show'
+  get 'summaries/edit'
+  get 'summaries/index'
+  get 'summaries/show'
+  get 'summaries/new'
+  get 'summaries/edit'
+  get 'parts/index'
+  get 'parts/show'
+  get 'parts/new'
+  get 'parts/edit'
   get 'vehicles/index'
   get 'vehicles/show'
   get 'vehicles/new'
@@ -32,5 +48,7 @@ Rails.application.routes.draw do
   resources :vehicles
   resources :customers
   resources :records
-  
+  resources :summaries
+  resources :parts
+  resources :reviews, only: [:new, :create]
 end
