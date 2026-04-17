@@ -1,0 +1,22 @@
+<h1>Parts</h1>
+<%= link_to 'Back', parts_path %>
+<%= form_with model: @part, html: { class: "form" } do |form| %><div>
+<%= hidden_field_tag :return_to, params[:return_to] %>
+    <%= form.label :name %><br>
+    <%= form.text_field :name %>
+  </div class = "field">
+
+  <div class = "field">
+    <%= form.label :price %><br>
+    <%= form.text_field :price %>
+  </div>
+  <div class = "field">
+    <%= form.label :stock %><br>
+    <%= form.text_field :stock %>
+  </div>
+  
+  <div class="field">
+    <%= form.submit "Add Parts" %>
+  </div>
+
+<% end %>

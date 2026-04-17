@@ -1,2 +1,12 @@
-<h1>Customers#show</h1>
-<p>Find me in app/views/customers/show.html.erb</p>
+<h1>Customers</h1>
+<div class = "card">
+  <p><%= @customer.name %></p>
+  <p><%= @customer.phone %></p>
+</div>
+Vehicles:
+<% @vehicles.each do |vehicle| %>
+  <div class = "card">
+    <p><%= vehicle.number_plate %></p>
+    <p><%= vehicle.model %></p>
+  </div>
+<% end %>

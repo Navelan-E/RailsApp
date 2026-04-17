@@ -1,0 +1,11 @@
+<h1>Parts</h1>
+<%= link_to 'New Part', new_part_path %>
+<% @parts.each do |part| %>
+<div class = "card">
+  <p><%= part.name %></p>
+  <p><%= part.price %></p>
+  <p><%= part.stock %></p>
+  <%= link_to 'Edit', edit_part_path(part) %>
+  <%= link_to 'Delete', part_path(part), method: :delete, data: { confirm: 'Are you sure?' } %>
+</div>
+<% end %>

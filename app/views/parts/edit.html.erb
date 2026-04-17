@@ -1,0 +1,12 @@
+<h1>Parts</h1>
+<%= link_to 'Back', parts_path %>
+<%= form_with model: @part, html: { class: "form" } do |form| %><div>
+    <%= form.hidden_field :id, value: @part.id %>
+  <div class = "field">
+    <%= form.label :stock %><br>
+    <%= form.text_field :stock %>
+  </div>
+  <div class = "field">
+    <%= form.submit "Update Parts Quantity" %>
+  </div>
+<% end %>

@@ -1,13 +1,10 @@
 class CustomersController < ApplicationController
   def index
+    @customers = Customer.all
   end
 
   def show
-  end
-
-  def new
-  end
-
-  def edit
+    @customer = Customer.find(params[:id])
+    @vehicles = @customer.vehicles
   end
 end

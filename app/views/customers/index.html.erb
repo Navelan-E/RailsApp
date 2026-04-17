@@ -1,4 +1,10 @@
-<h1>Customers#index</h1>
-<p>Find me in app/views/customers/index.html.erb</p>
-<%= link_to 'Back', home_index_path %>
+<h1>Customers</h1>
+<% @customers.each do |customer| %>
+  <div class = "card">
+    <p><%= customer.name %></p>
+    <p><%= customer.phone %></p>
+    <p><%= link_to 'View Details', customers_show_path(customer.id) %></p>
+  </div>
+<% end %>
+<hr>
 

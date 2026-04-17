@@ -3,9 +3,6 @@ class ReviewsController < ApplicationController
     @all_reviews = Review.all
   end
 
-  def show
-  end
-
   def new
     puts("hlo.. #{params[:record_id]}")
     @record = Record.find_by(id: params[:record_id])

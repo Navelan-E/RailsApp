@@ -1,11 +1,11 @@
-<h1>Reviews#new</h1>
-<p>Find me in app/views/reviews/new.html.erb</p>
+<h1>Reviews</h1>
 <p>Creating a new review for Mechanic: <%= @record.mechanic.name %></p>
-<%= form_with(model: @review) do |f| %>  <div>
+<%= form_with  model: @review, html: { class: "form" } do |f| %>  
+<div class = "field">
     <%= hidden_field_tag :record_id, @record.id %>
     <%= f.label :content %><br>
     <%= f.text_area :content %>
-  </div>
+  </div class = "field">
   <%= f.submit "Add Review" %>
 <% end %>
 <% link_to 'Back to Summary', summaries_path %>

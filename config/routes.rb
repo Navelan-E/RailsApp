@@ -1,4 +1,5 @@
 Rails.application.routes.draw do
+  get 'tags/index'
   get 'home/index'
   get 'reviews/index'
   get 'reviews/show'

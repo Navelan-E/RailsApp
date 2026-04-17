@@ -1,10 +1,101 @@
-/*
- * This is a manifest file that'll be compiled into application.css.
- *
- * With Propshaft, assets are served efficiently without preprocessing steps. You can still include
- * application-wide styles in this file, but keep in mind that CSS precedence will follow the standard
- * cascading order, meaning styles declared later in the document or manifest will override earlier ones,
- * depending on specificity.
- *
- * Consider organizing styles into separate files for maintainability.
- */
+body {
+  font-family: Arial, sans-serif;
+  background: #eef2f7;
+  margin: 0;
+  color: #1f2937;
+}
+
+.nav {
+  background: #1e293b;
+  padding: 12px 16px;
+}
+
+.nav a {
+  color: #e2e8f0;
+  margin-right: 14px;
+  text-decoration: none;
+  font-size: 14px;
+  transition: color 0.2s ease;
+}
+
+.nav a:hover {
+  color: #38bdf8;
+}
+
+.card {
+  background: #ffffff;
+  border: 1px solid #e5e7eb;
+  border-radius: 12px;
+  padding: 16px;
+  margin: 12px 0;
+  box-shadow: 0 3px 10px rgba(0, 0, 0, 0.04);
+}
+
+.card p {
+  margin: 6px 0;
+  color: #374151;
+}
+
+.form {
+  max-width: 420px;
+  margin: 40px auto;
+  padding: 22px;
+  background: #ffffff;
+  border: 1px solid #e5e7eb;
+  border-radius: 12px;
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.05);
+}
+
+.field {
+  margin-bottom: 14px;
+}
+
+.input {
+  width: 100%;
+  padding: 10px;
+  border: 1px solid #cbd5e1;
+  border-radius: 8px;
+  outline: none;
+  transition: border 0.2s ease, box-shadow 0.2s ease;
+}
+
+.input:focus {
+  border-color: #38bdf8;
+  box-shadow: 0 0 0 3px rgba(56, 189, 248, 0.2);
+}
+
+.btn {
+  padding: 9px 14px;
+  background: #2563eb;
+  color: white;
+  border: none;
+  border-radius: 8px;
+  cursor: pointer;
+  transition: background 0.2s ease;
+}
+
+.btn:hover {
+  background: #1d4ed8;
+}
+
+.hidden {
+  display: none;
+}
+
+select[multiple] {
+  min-height: 110px;
+  width: 180px;
+  border-radius: 8px;
+  border: 1px solid #cbd5e1;
+  padding: 6px;
+}
+
+a {
+  display: inline-block;
+  margin-top: 4px;
+  padding: 6px 12px;
+  background: #1e293b;
+  color: #e2e8f0;
+  text-decoration: none;
+  border-radius: 6px;
+}

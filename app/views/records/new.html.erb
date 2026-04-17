@@ -1,34 +1,48 @@
-<h1>Records#new</h1>
-<p>Find me in app/views/records/new.html.erb</p>
 <h1>New Record</h1>
 
-<%= form_with model: @record do |form| %>
-  <div>
+<%= form_with model: @record, html: { class: "form" } do |form| %>
+  <div class = "field">
     <%= form.label :Issues %><br>
     <%= form.text_area :internal_notes %>
   </div>
 
-  <div>
+  <div class = "field">
     <%= form.label :Vehicle_No %><br>
     <%= form.text_field :vehicle_no %>
   </div>
-  <div>
+  <div class = "field">
     <%= form.label :Model %><br>
     <%= form.text_field :model %>
   </div>
-  <div>
+  <div class = "field">
     <%= form.label :Customer_name %><br>
     <%= form.text_field :customer_name %>
   </div>
-  <div>
+  <div class = "field">
     <%= form.label :Customer_phone %><br>
     <%= form.text_field :customer_phone %>
   </div>
-  <div>
+  <div class = "field">
     <%= form.label :Customer_email %><br>
     <%= form.text_field :customer_email %>
   </div>
-  <div>
+  <div class="field">
+  <%= form.label :tag_ids, "Tags" %><br>
+
+  <%= form.collection_select :tag_ids,
+        Tag.all,
+        :id,
+        :tag,
+        {},
+        { multiple: true, size: 6 } %>
+  </div>
+
+  <div class="field">
+    <%= form.label :custom_tags, "Add custom tags" %><br>
+
+    <%= form.text_field :custom_tags, placeholder: "Enter tags separated by commas" %>
+  </div>
+  <div class = "field">
     <%= form.submit "Create record" %>
   </div>
 <% end %>

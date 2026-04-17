@@ -1,9 +1,12 @@
-<h1>Vehicles#show</h1>
-<p>Find me in app/views/vehicles/show.html.erb</p>
-<p><%= @vehicle.number_plate %></p>
-<p><%= @vehicle.model %></p>
+<h1>Vehicles</h1>
+<div class = "card">
+  <p><%= @vehicle.number_plate %></p>
+  <p><%= @vehicle.model %></p>
+</div>
 Records:
 <% @records.each do |record| %>
+  <div class = "card">
     <p><%= record.content %></p>
-  <% end %>
-<% link_to 'Back', vehicles_path %>
+  </div>
+<% end %>
+<%= link_to 'Back', vehicles_path %>

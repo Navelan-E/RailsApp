@@ -1,6 +1,5 @@
-<h1>Records#show</h1>
-<p>Find me in app/views/records/show.html.erb</p>
-<div>
+<h1>Records</h1>
+<div class = "card">
   <h2>Record Details</h2>
   <p>Vehicle: <%= @record.vehicle.number_plate %> - <%= @record.vehicle.model %></p>
   <p>Customer: <%= @record.customer.name %> - <%= @record.customer.phone %></p>
@@ -8,13 +7,15 @@
   <p>Issue: <%= @record.internal_notes %></p>
   <p>Assigned Mechanic: <%= @record.mechanic&.name || "Unassigned" %></p>
   <p>Total Cost: <%= @record.total_cost || "Not Calculated" %></p>
+  <p>Tags: <%= @record.tags.map(&:tag).join(", ") || "No tags" %></p>
+  <p>Used Parts: <%= @record.parts.map(&:name).join(", ") || "No parts used" %></p>
 </div>
 
-<div>
+<div class = "card">
   <h3>Comments = <%= @record.reviews.count %></h3>
   <% @record.reviews.each do |review| %>
-    <div>
-      <p><strong><%= review.user.name %>:</strong> <%= review.content %></p>
+    <div class = "card">
+      <p><%= review.content %></p>
     </div>
   <% end %>
 </div>

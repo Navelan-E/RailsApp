@@ -5,12 +5,13 @@
   <%= submit_tag "Search" %>
 <% end %>
 <%= link_to 'New Mechanic', new_mechanic_path %>
-<%= link_to 'Back', home_index_path %>
 
 <hr>
 
 <% @mechanics.each do |mechanic| %>
-  <p><%= mechanic.name %></p>
-  <%= button_to "Delete", mechanic_path(mechanic), method: :delete %>
+  <div class="card">
+    <p><%= mechanic.name %></p>
+    <%= button_to "Delete", mechanic_path(mechanic), method: :delete %>
+  </div>
   <hr>
 <% end %>

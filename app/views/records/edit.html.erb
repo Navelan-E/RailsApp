@@ -1,36 +1,50 @@
-<h1>Records#edit</h1>
-<p>Find me in app/views/records/edit.html.erb</p>
-<%= form_with model: @record do |form| %>
-  <div>
+<h1>Records</h1>
+<%= form_with model: @record, html: { class: "form" } do |form| %>
+<%= hidden_field_tag :record_id, @record.id %>
+  <div class = "field">
     <%= form.label :internal_notes %><br>
     <%= form.text_area :internal_notes %>
   </div>
-  <div>
+  <div class = "field">
     <%= form.label :status %><br>
     <%= form.select :status, Record.statuses.keys.map { |status| [status.humanize, status] },
     { include_blank: "Select Status" },
     { id: "status-select", onchange: "toggleSummary()" } %>
   </div>
   <div id="summary-section" <%= "hidden" unless @record.status == "completed" %>>>
-    <div>
+    <div class="field">
       <%= form.label :summary, "Summary" %><br>
       <%= form.text_area :summary %>
     </div>
   </div>
-  <div>
+  <div class="field">
     <%= form.label :mechanic_id, "Assign Mechanic" %><br>
     <%= form.collection_select :mechanic_id, @mechanics, :id, :name, include_blank: true %>
   </div>
-  <div>
+  <div class="field">
     <%= form.label :total_cost %><br>
     <%= form.text_area :total_cost %>
   </div>
-  <div>
+  <div class="field">
     <%= link_to 'Add Mechanic', new_mechanic_path(return_to: request.fullpath) %>
   </div>
-  <div>
-    <%= form.submit "Update Record" %>
+  <div class="field">
+    <%= form.label :part_id, "Assign Part" %><br>
+    <%= form.collection_select :part_id, @parts, :id, :name, include_blank: true %>
   </div>
+<div class="field">
+    <%= link_to 'Add Part', new_part_path(return_to: request.fullpath) %>
+</div>
+<div class="field">
+    <%= form.label :part_quantity %><br>
+    <%= form.text_field :part_quantity %>
+</div>
+<div class="field">
+    <%= form.submit "Update Record" %>
+</div>
+<div class="field">
+    <%= link_to 'Back', records_path %>
+</div>
 <% end %>
 <script>
   function toggleSummary() {
