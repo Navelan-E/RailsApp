@@ -30,7 +30,7 @@
   </div>
   <div class="field">
     <%= form.label :part_id, "Assign Part" %><br>
-    <%= form.collection_select :part_id, @parts, :id, :name, include_blank: true %>
+    <%= form.collection_select :part_id, (@parts || []), :id, :name, include_blank: true %>
   </div>
 <div class="field">
     <%= link_to 'Add Part', new_part_path(return_to: request.fullpath) %>

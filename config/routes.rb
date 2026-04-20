@@ -1,4 +1,10 @@
 Rails.application.routes.draw do
+  get 'profile/show'
+  get 'profile/edit'
+  get 'profile/destroy'
+  get 'profile/show'
+  devise_for :mechanics
+  devise_for :customers
   get 'tags/index'
   get 'home/index'
   get 'reviews/index'
@@ -32,6 +38,8 @@ Rails.application.routes.draw do
   get 'mechanics/show'
   get 'mechanics/new'
   get 'mechanics/edit'
+  get "/customer/signup", to: "customers/registrations#new"
+  get "/mechanic/signup", to: "mechanics/registrations#new"
   # Define your application routes per the DSL in https://guides.rubyonrails.org/routing.html
 
   # Reveal health status on /up that returns 200 if the app boots with no exceptions, otherwise 500.
@@ -52,4 +60,11 @@ Rails.application.routes.draw do
   resources :summaries
   resources :parts
   resources :reviews, only: [:new, :create]
+  resources :customers do
+    member do
+      patch :disable
+    end
+  end
+
+  root to: "home#index"
 end

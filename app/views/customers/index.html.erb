@@ -3,7 +3,9 @@
   <div class = "card">
     <p><%= customer.name %></p>
     <p><%= customer.phone %></p>
-    <p><%= link_to 'View Details', customers_show_path(customer.id) %></p>
+    <p><%= customer.email %></p>
+    <p><%= customer.id %></p>
+    <p><%= link_to 'View Details', customers_show_path(id: customer.id) %></p>
   </div>
 <% end %>
 <hr>

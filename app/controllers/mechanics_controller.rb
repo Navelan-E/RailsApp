@@ -1,4 +1,5 @@
 class MechanicsController < ApplicationController
+    before_action :authenticate_mechanic!, except: [:index]
 
     def index
         if params[:q].present?
@@ -27,6 +28,10 @@ class MechanicsController < ApplicationController
         end
     end
 
+    def show
+        @mechanic = Mechanic.find(params[:id])
+    end
+
     def mechanic_params
         params.require(:mechanic).permit(:name, :experience)
     end
@@ -35,5 +40,5 @@ class MechanicsController < ApplicationController
         @mechanic = Mechanic.find(params[:id])
         @mechanic.destroy
         redirect_to mechanics_path, notice: 'Mechanic was successfully deleted.'
-    end
+    end 
 end

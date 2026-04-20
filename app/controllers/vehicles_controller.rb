@@ -1,4 +1,5 @@
 class VehiclesController < ApplicationController
+  before_action :authenticate_mechanic!
   before_action :fetch_records, only: %i[show]
   def index
     if params[:search]

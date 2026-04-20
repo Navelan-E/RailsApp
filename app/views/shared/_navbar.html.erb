@@ -1,10 +1,19 @@
 <nav class="nav">
-  <%= link_to 'Records', records_path %>
   <%= link_to 'Summaries', summaries_path %>
   <%= link_to 'Reviews', reviews_index_path %>
   <%= link_to 'Mechanics', mechanics_path %>
-  <%= link_to 'Customers', customers_index_path %>
-  <%= link_to 'Vehicles', vehicles_path %>
-  <%= link_to 'Parts', parts_path %>
-  <%= link_to 'Tags', tags_index_path %>
+  <% if mechanic_signed_in? %>
+    <%= link_to 'Records', records_path %>
+    <%= link_to 'Customers', customers_index_path %>
+    <%= link_to 'Vehicles', vehicles_path %>
+    <%= link_to 'Parts', parts_path %>
+    <%= link_to 'Tags', tags_index_path %>
+  <% end %>
+  <%= link_to 'Profile', profile_show_path %>
+  <%= link_to 'Home', root_path %>
+  <% if current_mechanic%>
+    <%= link_to 'LogoutM', destroy_mechanic_session_path, method: :delete %>
+  <% elsif customer_signed_in? %>
+    <%= link_to 'LogoutC', destroy_customer_session_path, method: :delete %>
+  <% end %>
 </nav>

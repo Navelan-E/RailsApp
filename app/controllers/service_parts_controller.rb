@@ -1,2 +1,0 @@
-class ServicePartsController < ApplicationController
-end

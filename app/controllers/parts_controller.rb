@@ -1,5 +1,5 @@
 class PartsController < ApplicationController
-
+  before_action :authenticate_mechanic!
   before_action :set_part, only: [:edit, :update]
   def index
     @parts = Part.all

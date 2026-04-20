@@ -1,0 +1,10 @@
+<h1>Home</h1>
+<p>Welcome to the home page!</p>
+<% unless current_customer %>
+<p><%= current_customer %></p>
+<%= link_to 'Go to Customer Login', new_customer_session_path %>
+<% end %>
+<% unless current_mechanic %>
+<p><%= current_mechanic %></p>
+<%= link_to 'Go to Mechanic Login', new_mechanic_session_path %>
+<% end %>

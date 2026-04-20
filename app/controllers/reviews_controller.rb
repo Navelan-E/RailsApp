@@ -1,4 +1,6 @@
 class ReviewsController < ApplicationController
+  before_action :any_signed_in?
+  before_action :authenticate_customer!, only: [:new, :create, :destroy]
   def index
     @all_reviews = Review.all
   end
@@ -20,6 +22,13 @@ class ReviewsController < ApplicationController
       render :new
     end
   end
+  
+  def destroy
+    @review = Review.find(params[:id])
+    @review.destroy
+    redirect_to reviews_path, notice: "Review deleted successfully."
+  end
+
   private
 
   def review_params

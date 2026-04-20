@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema[7.1].define(version: 2026_04_15_064406) do
+ActiveRecord::Schema[7.1].define(version: 2026_04_20_113751) do
   # These are extensions that must be enabled in order to support this database
   enable_extension "plpgsql"
 
@@ -20,6 +20,15 @@ ActiveRecord::Schema[7.1].define(version: 2026_04_15_064406) do
     t.string "email"
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
+    t.string "encrypted_password", default: "", null: false
+    t.string "reset_password_token"
+    t.datetime "reset_password_sent_at"
+    t.datetime "remember_created_at"
+    t.integer "failed_attempts", default: 0, null: false
+    t.string "unlock_token"
+    t.datetime "locked_at"
+    t.index ["reset_password_token"], name: "index_customers_on_reset_password_token", unique: true
+    t.index ["unlock_token"], name: "index_customers_on_unlock_token", unique: true
   end
 
   create_table "mechanics", force: :cascade do |t|
@@ -27,6 +36,17 @@ ActiveRecord::Schema[7.1].define(version: 2026_04_15_064406) do
     t.integer "experience"
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
+    t.string "email", default: "", null: false
+    t.string "encrypted_password", default: "", null: false
+    t.string "reset_password_token"
+    t.datetime "reset_password_sent_at"
+    t.datetime "remember_created_at"
+    t.integer "failed_attempts", default: 0, null: false
+    t.datetime "locked_at"
+    t.string "unlock_token"
+    t.index ["email"], name: "index_mechanics_on_email", unique: true
+    t.index ["reset_password_token"], name: "index_mechanics_on_reset_password_token", unique: true
+    t.index ["unlock_token"], name: "index_mechanics_on_unlock_token", unique: true
   end
 
   create_table "parts", force: :cascade do |t|
@@ -55,6 +75,8 @@ ActiveRecord::Schema[7.1].define(version: 2026_04_15_064406) do
     t.bigint "reviewable_id", null: false
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
+    t.bigint "customer_id", null: false
+    t.index ["customer_id"], name: "index_reviews_on_customer_id"
     t.index ["reviewable_type", "reviewable_id"], name: "index_reviews_on_reviewable"
   end
 
@@ -104,6 +126,7 @@ ActiveRecord::Schema[7.1].define(version: 2026_04_15_064406) do
 
   add_foreign_key "records", "mechanics"
   add_foreign_key "records", "vehicles"
+  add_foreign_key "reviews", "customers"
   add_foreign_key "service_parts", "parts"
   add_foreign_key "service_parts", "records"
   add_foreign_key "service_tags", "records"
