@@ -11,9 +11,9 @@
   <% end %>
   <%= link_to 'Profile', profile_show_path %>
   <%= link_to 'Home', root_path %>
-  <% if current_mechanic%>
-    <%= link_to 'LogoutM', destroy_mechanic_session_path, method: :delete %>
+  <% if mechanic_signed_in? %>
+    <%= link_to 'LogoutM', destroy_mechanic_session_path, data: { turbo_method: :delete } %> 
   <% elsif customer_signed_in? %>
-    <%= link_to 'LogoutC', destroy_customer_session_path, method: :delete %>
+    <%= link_to 'LogoutC', destroy_customer_session_path, data: { turbo_method: :delete } %>
   <% end %>
 </nav>

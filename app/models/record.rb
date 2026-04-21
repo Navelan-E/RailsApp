@@ -1,6 +1,7 @@
 class Record < ApplicationRecord
   validates :vehicle_id, :status, :internal_notes, presence: true
   before_validation :ensure_status_values
+  attr_accessor :customer_notes
   before_update :sumarize_record, if: :completed?
   enum status: { pending: 'pending', in_progress: 'in_progress', completed: 'completed' }
   belongs_to :vehicle
@@ -17,10 +18,11 @@ class Record < ApplicationRecord
   end
 
   def sumarize_record
+    puts "Summarizing record with status: #{self.customer_notes}"
     if self.summary.present?
-      self.summary.update(summary_text: self.internal_notes, customer_notes: '', completed_at: Time.current)
+      self.summary.update(summary_text: self.internal_notes, customer_notes: self.customer_notes, completed_at: Time.current)
     else
-      Summary.create(record_id: self.id, summary_text: self.internal_notes, customer_notes: '', completed_at: Time.current)
+      Summary.create(record_id: self.id, summary_text: self.internal_notes, customer_notes: self.customer_notes, completed_at: Time.current)
     end
   end
 end

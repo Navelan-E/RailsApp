@@ -5,6 +5,24 @@ class ReviewsController < ApplicationController
     @all_reviews = Review.all
   end
 
+  def edit
+    @review = Review.find(params[:id])
+  end
+
+  def update
+    @review = Review.find(params[:id])
+    if @review.update(review_params)
+      redirect_to reviews_path, notice: "Review updated successfully."
+    else
+      flash.now[:alert] = "Failed to update review."
+      render :edit
+    end
+  end
+
+  def show
+    @review = Review.find(params[:id])
+  end
+
   def new
     puts("hlo.. #{params[:record_id]}")
     @record = Record.find_by(id: params[:record_id])
@@ -14,7 +32,7 @@ class ReviewsController < ApplicationController
 
   def create
     @record = Record.find(params[:record_id])
-    @review = Review.new(reviewable: @record, **review_params)
+    @review = Review.new(reviewable: @record, **review_params, customer_id: current_customer.id)
     if @review.save
       redirect_to summaries_path, notice: "Review added successfully."
     else
@@ -24,6 +42,7 @@ class ReviewsController < ApplicationController
   end
   
   def destroy
+    puts "Destroying review with ID: #{params[:id]}"
     @review = Review.find(params[:id])
     @review.destroy
     redirect_to reviews_path, notice: "Review deleted successfully."

@@ -51,10 +51,8 @@ class RecordsController < ApplicationController
     @parts = Part.all
     param = params[:record].permit(:internal_notes, :status, :mechanic_id, :total_cost)
     puts "Update Params: #{param}"
+    @record.customer_notes = params.dig(:record, :customer_notes)
     if @record.update(param)
-      if param[:status] == "completed"
-        @record.summary.update(customer_notes: params[:record][:summary])
-      end
       puts "Record updated: #{@record.inspect}"
       redirect_to records_path, notice: "Record updated successfully"
     else

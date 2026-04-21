@@ -1,4 +1,6 @@
 Rails.application.routes.draw do
+  devise_for :admin_users, ActiveAdmin::Devise.config
+  ActiveAdmin.routes(self)
   get 'profile/show'
   get 'profile/edit'
   get 'profile/destroy'
@@ -59,7 +61,7 @@ Rails.application.routes.draw do
   resources :records
   resources :summaries
   resources :parts
-  resources :reviews, only: [:new, :create]
+  resources :reviews
   resources :customers do
     member do
       patch :disable

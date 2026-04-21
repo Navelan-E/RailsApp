@@ -1,4 +1,5 @@
 class MechanicsController < ApplicationController
+    before_action :any_signed_in?
     before_action :authenticate_mechanic!, except: [:index]
 
     def index
@@ -30,6 +31,17 @@ class MechanicsController < ApplicationController
 
     def show
         @mechanic = Mechanic.find(params[:id])
+    end
+
+    def update
+        @mechanic = Mechanic.find(params[:id])
+
+        if @mechanic.update(params[:mechanic].permit(:name, :email, :experience))
+            redirect_to profile_show_path(@mechanic), notice: "Mechanic updated successfully"
+        else
+            flash.now[:alert] = @mechanic.errors.full_messages.join(", ")
+            render :edit, status: :unprocessable_entity
+        end
     end
 
     def mechanic_params

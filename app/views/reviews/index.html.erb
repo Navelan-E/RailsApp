@@ -8,9 +8,9 @@
     <p><%= review.content %></p>
     <p><%= review.reviewable.mechanic.name %></p>
     <p><%= review.customer.name %></p>
-    <% if review.customer_id == current_customer.id %>
+    <% if review.customer_id == current_customer&.id %>
       <%= link_to 'Edit', edit_review_path(review) %>
-      <%= link_to 'Delete', review, method: :delete, confirm: 'Are you sure?' %>
+      <%= button_to 'Delete', review, method: :delete, data: { turbo_confirm: 'Are you sure?' } %>
     <% end %>
     <p>
       <%= link_to 'View Summary', summary_path(review.reviewable.summary) %>

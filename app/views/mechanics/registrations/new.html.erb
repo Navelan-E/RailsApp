@@ -1,6 +1,5 @@
 <h2>Mechanic Sign up</h2>
-
-<%= form_for(resource, as: resource_name, url: registration_path(resource_name)) do |f| %>
+<%= form_for(resource, as: resource_name, url: registration_path(resource_name), html: { class: "form" }) do |f| %>
   <%= render "mechanics/shared/error_messages", resource: resource %>
 
   <div class="field">
@@ -34,5 +33,4 @@
     <%= f.submit "Sign up" %>
   </div>
 <% end %>
-
 <%= render "mechanics/shared/links" %>

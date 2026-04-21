@@ -1,0 +1,10 @@
+<h1>Edit your review</h1>
+<%= form_with model: @review, html: { class: "form" } do |form| %>
+  <div class="field">
+    <%= form.label :content %><br>
+    <%= form.text_area :content %>
+  </div>
+  <div class="actions">
+    <%= form.submit "Update Review" %>
+  </div>
+<% end %>

@@ -7,8 +7,16 @@
   <p>Issue: <%= @record.internal_notes %></p>
   <p>Assigned Mechanic: <%= @record.mechanic&.name || "Unassigned" %></p>
   <p>Total Cost: <%= @record.total_cost || "Not Calculated" %></p>
-  <p>Tags: <%= @record.tags.map(&:tag).join(", ") || "No tags" %></p>
-  <p>Used Parts: <%= @record.parts.map(&:name).join(", ") || "No parts used" %></p>
+  <% if @record.tags.any? %>
+    <p>Tags: <%= @record.tags.map(&:tag).join(", ") || "No tags" %></p>
+  <%else%>
+    <p>No tags associated with this record.</p>
+  <% end %>
+  <% if @record.parts.any? %>
+    <p>Used Parts: <%= @record.parts.map(&:name).join(", ") || "No parts used" %></p>
+  <%else%>
+    <p>No parts associated with this record.</p>
+  <% end %>
 </div>
 
 <div class = "card">

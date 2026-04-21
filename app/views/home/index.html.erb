@@ -1,10 +1,16 @@
-<h1>Home</h1>
-<p>Welcome to the home page!</p>
-<% unless current_customer %>
-<p><%= current_customer %></p>
-<%= link_to 'Go to Customer Login', new_customer_session_path %>
-<% end %>
-<% unless current_mechanic %>
-<p><%= current_mechanic %></p>
-<%= link_to 'Go to Mechanic Login', new_mechanic_session_path %>
-<% end %>
+    <div class="login_container">
+        <%= link_to new_customer_session_path, class: "login_card customer" do %>
+        <div>
+            <h3>Continue as a Customer</h3>
+        </div>
+        <% end %>
+
+        <%= link_to new_mechanic_session_path, class: "login_card mechanic" do %>
+        <div>
+            <h3>Continue as a Mechanic</h3>
+        </div>
+        <% end %>
+    </div>
+    <div class="content">
+        <p>We provide reliable bike service to keep your ride smooth, safe, and worry-free. Every vehicle is handled with care and precision to ensure the best performance on the road. Our goal is to keep your wheels turning effortlessly so you can enjoy every journey with confidence. Because a well-serviced bike always delivers a better ride.</p>
+    </div>

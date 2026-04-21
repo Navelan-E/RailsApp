@@ -1,0 +1,22 @@
+<h1>Mechanic Details</h1>
+<h2><%= @mechanic.name %></h2>
+<p><%= @mechanic.email %></p>
+<% if @mechanic.records.any? %>
+    <h3>Assigned Repairs</h3>
+    <% @mechanic&.records&.each do |record| %>
+    <div class="card">
+        <p><%= record.internal_notes %> - <%= link_to "View", reviews_show_path(record) %></p>
+        <p><%= record.created_at.strftime("%B %d, %Y") %></p>
+        <p><%= record.status %></p>
+        <% if record.reviews.any? %>
+            <% record.reviews.each do |review| %>
+                <p><%= review.content %></p>
+            <% end %>
+        <% else %>
+            <p>No reviews available.</p>
+        <% end %>
+    </div>
+    <% end %>
+<% else %>
+  <p>No repairs assigned yet.</p>
+<% end %>

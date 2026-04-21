@@ -1,13 +1,26 @@
 <h1>Profile</h1>
-<%= form_with model: @customer, html: { class: "form" } do |f| %>  
+<% if customer_signed_in? %>
+  <% @user = current_customer %>
+<% elsif mechanic_signed_in? %>
+  <% @user = current_mechanic %>
+<% end %>
+<%= form_with model: @user, html: { class: "form" } do |f| %>  
 <div class = "form-group">
     <%= f.label :name %>
     <%= f.text_field :name, class: "form-control" %>
   </div>
+  <%if customer_signed_in? %>
   <div class = "form-group">
     <%= f.label :phone %>
     <%= f.text_field :phone, class: "form-control" %>
   </div>
+  <% end %>
+  <%if mechanic_signed_in? %>
+  <div class = "form-group">
+    <%= f.label :experience %>
+    <%= f.text_field :experience, class: "form-control" %>
+  </div>
+  <% end %>
   <div class = "form-group">
     <%= f.label :email %>
     <%= f.email_field :email, class: "form-control" %>

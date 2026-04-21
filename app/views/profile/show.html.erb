@@ -1,19 +1,31 @@
 <h1>Profile</h1>
-
+<div class="card">
 <p>Name: <%= @user.name %></p>
+<%if customer_signed_in?%>
 <p>Phone: <%= @user.phone %></p>
+<% end %>
 <p>Email: <%= @user.email %></p>
-<% if @user.vehicles.any? %>
-  <h2>Vehicles:</h2>
-  <% @user.vehicles.each do |vehicle| %>
-    <div class = "card">
-      <p><%= vehicle.number_plate %></p>
-      <p><%= vehicle.model %></p>
-    </div>
+<% if customer_signed_in? %> 
+  <% if @user.vehicles.any? %>
+    <h2>Vehicles:</h2>
+    <% @user.vehicles.each do |vehicle| %>
+      <div class = "card">
+        <p><%= vehicle.number_plate %></p>
+        <p><%= vehicle.model %></p>
+        <%= button_to "Delete", vehicle, method: :delete, confirm: "Are you sure?" %>
+      </div>
+    <% end %>
+  <%else%>
+    <p>No vehicles associated with this profile.</p>
   <% end %>
-<%else%>
-  <p>No vehicles associated with this profile.</p>
 <% end %>
 <%= link_to 'Edit Profile', profile_edit_path(@user) %>
+<div style="margin-top: 20px;">
 <%= button_to "Disable", disable_customer_path(@user), method: :patch, confirm: 'Are you sure?' %>
+</div>
+<% if customer_signed_in? %>
+<div style="margin-top: 20px;">
 <%= link_to 'Add Vehicle', new_vehicle_path %>
+</div>
+<% end %>
+</div>

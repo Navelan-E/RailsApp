@@ -11,7 +11,8 @@
 <% @mechanics.each do |mechanic| %>
   <div class="card">
     <p><%= mechanic.name %></p>
+    <%= button_to "Show", mechanic_path(mechanic), method: :get %>
     <%= button_to "Delete", mechanic_path(mechanic), method: :delete %>
   </div>
-  <hr>
 <% end %>
+<hr>
