@@ -32,7 +32,15 @@ class ReviewsController < ApplicationController
 
   def create
     @record = Record.find(params[:record_id])
-    @review = Review.new(reviewable: @record, **review_params, customer_id: current_customer.id)
+    reviewable = case params.dig(:review, :review_type)
+      when "Mechanic"
+        @record.mechanic
+      when "Vehicle"
+        @record.vehicle
+      else
+        @record
+    end
+    @review = Review.new(reviewable: reviewable, **review_params, customer_id: current_customer.id)
     if @review.save
       redirect_to summaries_path, notice: "Review added successfully."
     else

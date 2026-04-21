@@ -5,6 +5,9 @@
     <%= hidden_field_tag :record_id, @record.id %>
     <%= f.label :content %><br>
     <%= f.text_area :content %>
+<div class = "field">
+    <%= f.label :review_type %>
+    <%= f.select :review_type, options_for_select(['Record', 'Mechanic', 'Vehicle'])%>  
   </div class = "field">
   <%= f.submit "Add Review" %>
 <% end %>

@@ -100,6 +100,7 @@ body {
 }
 
 .field {
+  margin-top: 20px;
   margin-bottom: 24px;
   min-width: 300px;
   min-height: 50px;

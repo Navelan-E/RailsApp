@@ -1,6 +1,15 @@
 <h1>Mechanic Details</h1>
 <h2><%= @mechanic.name %></h2>
 <p><%= @mechanic.email %></p>
+<% if @mechanic.reviews.any? %>
+    <h3>Personal Reviews</h3>
+    <% @mechanic.reviews.each do |review| %>
+        <div class="card">
+            <p><%= review.content %></p>
+            <p><%= review.customer.name %></p>
+        </div>
+    <% end %>
+<% end %>
 <% if @mechanic.records.any? %>
     <h3>Assigned Repairs</h3>
     <% @mechanic&.records&.each do |record| %>
@@ -12,6 +21,7 @@
             <% record.reviews.each do |review| %>
                 <p><%= review.content %></p>
             <% end %>
+
         <% else %>
             <p>No reviews available.</p>
         <% end %>
