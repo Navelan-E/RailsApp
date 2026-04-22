@@ -1,11 +1,12 @@
 <h1>Customers</h1>
 <% @customers.each do |customer| %>
   <div class = "card">
-    <p><%= customer.name %></p>
-    <p><%= customer.phone %></p>
-    <p><%= customer.email %></p>
-    <p><%= customer.id %></p>
-    <p><%= link_to 'View Details', customers_show_path(id: customer.id) %></p>
+    <p>Name: <%= customer.name %></p>
+    <p>Phone: <%= customer.phone %></p>
+    <p>Email: <%= customer.email %></p>
+    <p>Locked: <%= customer.access_locked? %></p>
+
+  <p><%= link_to 'View Details', customers_show_path(id: customer.id) %></p>
   </div>
 <% end %>
 <hr>

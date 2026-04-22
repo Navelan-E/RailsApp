@@ -1,9 +1,8 @@
 Rails.application.routes.draw do
-  devise_for :admin_users, ActiveAdmin::Devise.config
+  devise_for :admin_users
   ActiveAdmin.routes(self)
   get 'profile/show'
   get 'profile/edit'
-  get 'profile/destroy'
   get 'profile/show'
   devise_for :mechanics
   devise_for :customers
@@ -13,9 +12,6 @@ Rails.application.routes.draw do
   get 'reviews/show'
   get 'reviews/new'
   get 'reviews/edit'
-  get 'summaries/index'
-  get 'summaries/show'
-  get 'summaries/edit'
   get 'summaries/index'
   get 'summaries/show'
   get 'summaries/new'
@@ -55,7 +51,12 @@ Rails.application.routes.draw do
   # Defines the root path route ("/")
   # root "posts#index"
 
-  resources :mechanics
+  resources :mechanics do
+    member do
+      patch :disable
+      patch :unlock
+    end
+  end
   resources :vehicles
   resources :customers
   resources :records
@@ -65,6 +66,7 @@ Rails.application.routes.draw do
   resources :customers do
     member do
       patch :disable
+      patch :unlock
     end
   end
 

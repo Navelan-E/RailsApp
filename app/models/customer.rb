@@ -7,4 +7,7 @@ class Customer < ApplicationRecord
     validates :name, :phone, :email, presence: true
     validates :email, format: { with: URI::MailTo::EMAIL_REGEXP }
     has_many :vehicles
+  def self.ransackable_attributes(_auth_object = nil)
+    [ "email", "id", "name", "phone" ]
+  end
 end

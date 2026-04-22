@@ -25,4 +25,10 @@ class Record < ApplicationRecord
       Summary.create(record_id: self.id, summary_text: self.internal_notes, customer_notes: self.customer_notes, completed_at: Time.current)
     end
   end
+  def self.ransackable_associations(_auth_object = nil)
+    ["customer", "mechanic", "parts", "tags", "vehicle", "reviews", "summary", "service_parts"]
+  end
+  def self.ransackable_attributes(_auth_object = nil)
+    ["id", "internal_notes", "mechanic_id", "status", "total_cost", "vehicle_id", "created_at", "updated_at"]
+  end
 end

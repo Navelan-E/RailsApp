@@ -1,5 +1,6 @@
 class CustomersController < ApplicationController
-before_action :authenticate_mechanic!, except: [:update,:disable]
+before_action :authenticate_pros?, except: [:update,:disable]
+before_action :any_signed_in?
   def index
     @customers = Customer.all
   end
@@ -36,6 +37,18 @@ before_action :authenticate_mechanic!, except: [:update,:disable]
       redirect_to root_path, notice: "Customer disabled successfully."
     else
       redirect_to profile_show_path(@customer), alert: "Customer not found."
+    end
+  end
+
+  def unlock
+    @customer = Customer.find_by(id: params[:id])
+    if @customer
+      if @customer.access_locked?
+        @customer.unlock_access!
+      end
+      redirect_to customers_show_path(@customer), notice: "Customer unlocked successfully."
+    else
+      redirect_to customers_show_path(@customer), alert: "Customer not found."
     end
   end
 end

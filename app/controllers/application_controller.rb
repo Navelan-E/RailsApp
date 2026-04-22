@@ -15,8 +15,14 @@ class ApplicationController < ActionController::Base
   end
 
   def any_signed_in?
-    unless customer_signed_in? || mechanic_signed_in?
+    unless customer_signed_in? || mechanic_signed_in? || admin_user_signed_in?
       redirect_to root_path, alert: "Please sign in to continue."
+    end
+  end
+
+  def authenticate_pros?
+    unless mechanic_signed_in? || admin_user_signed_in?
+      redirect_to root_path, alert: "You must be signed in as a mechanic or admin to access this section."
     end
   end
 
@@ -27,5 +33,6 @@ class ApplicationController < ActionController::Base
   # Changes to the importmap will invalidate the etag for HTML responses
   stale_when_importmap_changes
   helper_method :any_signed_in?
+  helper_method :authenticate_pros?
   
 end

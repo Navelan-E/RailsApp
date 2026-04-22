@@ -2,6 +2,10 @@
 <div class = "card">
   <p><%= @customer.name %></p>
   <p><%= @customer.phone %></p>
+  <p><%= @customer.email %></p>
+  <% if @customer.access_locked? && admin_user_signed_in?%>
+    <%= button_to "Unlock", unlock_customer_path(@customer), method: :patch, confirm: 'Are you sure?' %>
+  <% end %>
 </div>
 <h2>Vehicles:</h2>
 <% @vehicles.each do |vehicle| %>

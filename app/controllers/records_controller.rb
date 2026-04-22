@@ -1,6 +1,6 @@
 class RecordsController < ApplicationController
   before_action :any_signed_in?
-  before_action :authenticate_mechanic!, except: [:index, :show]
+  before_action :authenticate_pros?, except: [:index, :show]
   before_action :set_record, only: [:edit, :update, :show]
   before_action :create_vehicle_customer_and_tags, only: [:create]
   before_action :set_parts, only: [:update]

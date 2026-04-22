@@ -14,4 +14,8 @@ class Mechanic < ApplicationRecord
             self.name = self.name.strip.downcase
         end
     end
+
+    def self.ransackable_attributes(_auth_object = nil)
+    [ "email", "experience", "id", "name" ]
+    end
 end

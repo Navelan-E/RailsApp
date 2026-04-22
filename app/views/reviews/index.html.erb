@@ -6,15 +6,17 @@
 <% @all_reviews.each do |review| %>
   <div class="card">
     <p><%= review.content %></p>
-    <p><%= review.reviewable.mechanic.name %></p>
+    <%if review.reviewable_type == "Mechanic"%>
+      <p><%= review.reviewable&.name %></p>
+    <% end %>
+    <% if review.reviewable_type == "Record" %>
+      <p><%= review.reviewable&.mechanic.name %></p>
+    <% end %>
     <p><%= review.customer.name %></p>
     <% if review.customer_id == current_customer&.id %>
       <%= link_to 'Edit', edit_review_path(review) %>
       <%= button_to 'Delete', review, method: :delete, data: { turbo_confirm: 'Are you sure?' } %>
     <% end %>
-    <p>
-      <%= link_to 'View Summary', summary_path(review.reviewable.summary) %>
-    </p>
   </div>
 <% end %>
 
