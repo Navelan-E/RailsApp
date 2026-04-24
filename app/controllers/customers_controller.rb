@@ -3,6 +3,7 @@ before_action :authenticate_pros?, except: [:update,:disable]
 before_action :any_signed_in?
   def index
     @customers = Customer.all
+    render json: @customer
   end
 
   def show
