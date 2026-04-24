@@ -1,9 +1,18 @@
 ActiveAdmin.register Part do
+  config.per_page = 10
 
   collection_action :empty_stock, method: :post do
-    puts "Emptying stock for parts with IDs: #{}"
-    Part.where(id: params[:ids]).update_all("stock = 0")
+    Part.update_all("stock = 0")
     redirect_to collection_path, alert: "Selected parts have been marked as out of stock."
+  end
+
+  collection_action :sync_stock, method: :post do
+    Part.find_each do |part|
+      total_used = ServicePart.exclude_completed.where(part_id: part.id).sum(:quantity)
+      new_stock = [part.stock - total_used, 0].max
+      part.update(stock: new_stock)
+    end
+    redirect_to collection_path, notice: "Stock levels have been synchronized based on usage."
   end
   # See permitted parameters documentation:
   # https://github.com/activeadmin/activeadmin/blob/master/docs/2-resource-customization.md#setting-up-strong-parameters
@@ -22,6 +31,10 @@ ActiveAdmin.register Part do
   #
   action_item :empty_stock, only: :index do
     link_to "Empty Stock", empty_stock_admin_parts_path, method: :post
+  end
+
+  action_item :sync_stock, only: :index do
+    link_to "Sync Stock", sync_stock_admin_parts_path, method: :post
   end
 
   def admin_parts_params

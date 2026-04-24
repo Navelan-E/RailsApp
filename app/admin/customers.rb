@@ -1,4 +1,6 @@
 ActiveAdmin.register Customer do
+  config.per_page = 10
+
   member_action :disable, method: :patch do
     unless resource.access_locked?
       resource.lock_access!

@@ -1,4 +1,8 @@
 class Record < ApplicationRecord
+
+  scope :latest_completed, -> {
+    where(status: "completed").order(updated_at: :desc)
+  }
   validates :vehicle_id, :status, :internal_notes, presence: true
   before_validation :ensure_status_values
   attr_accessor :customer_notes
@@ -8,7 +12,8 @@ class Record < ApplicationRecord
   has_one :customer, through: :vehicle
   has_one :summary
   belongs_to :mechanic, optional: true
-  has_many :service_parts
+  has_many :service_parts, inverse_of: :record, dependent: :destroy
+  accepts_nested_attributes_for :service_parts, allow_destroy: true
   has_many :parts, through: :service_parts
   has_and_belongs_to_many :tags, join_table: :service_tags
   has_many :reviews, as: :reviewable
@@ -30,5 +35,8 @@ class Record < ApplicationRecord
   end
   def self.ransackable_attributes(_auth_object = nil)
     ["id", "internal_notes", "mechanic_id", "status", "total_cost", "vehicle_id", "created_at", "updated_at"]
+  end
+  def self.ransackable_scopes(_auth_object = nil)
+    [:latest_completed]
   end
 end

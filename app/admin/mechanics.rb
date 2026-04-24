@@ -1,4 +1,5 @@
 ActiveAdmin.register Mechanic do
+  config.per_page = 10
   member_action :disable, method: :patch do
     unless resource.access_locked?
       resource.lock_access!
@@ -11,6 +12,10 @@ ActiveAdmin.register Mechanic do
       resource.unlock_access!
       redirect_to admin_customer_path(resource), notice: "Customer unlocked successfully."
     end
+  end
+
+  member_action :view_assigned_records, method: :get do
+    redirect_to admin_records_path("q[mechanic_id_eq]" => resource.id)
   end
 
   # See permitted parameters documentation:
@@ -65,5 +70,8 @@ ActiveAdmin.register Mechanic do
   end
   action_item :unlock, only: :show do
     link_to "Unlock Mechanic", unlock_admin_mechanic_path(resource), method: :patch if resource.access_locked?
+  end
+  action_item :view_assigned_records, only: :show do
+    link_to "View Assigned Records", view_assigned_records_admin_mechanic_path(resource)
   end
 end
