@@ -13,5 +13,4 @@ class Review < ApplicationRecord
   def self.ransackable_attributes(_auth_object = nil)
     ["content", "customer_id", "id", "reviewable_id", "reviewable_type"]
   end
-
 end
