@@ -39,7 +39,3 @@ Review
 
 Tag
   has_and_belongs_to_many :records
-
-ServiceTag
-  belongs_to :record
-  belongs_to :tag

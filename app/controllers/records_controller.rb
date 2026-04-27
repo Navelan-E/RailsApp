@@ -83,14 +83,34 @@ class RecordsController < ApplicationController
   def create_vehicle_customer_and_tags
     rp = record_params
     puts "Record Params: #{rp}"
-    @customer = Customer.find_or_create_by(phone: rp[:customer_phone]) do |c|
-      c.name = rp[:customer_name]
-      c.email = rp[:customer_email]
+    
+    @customer = Customer.find_by(phone: rp[:customer_phone])
+    unless @customer
+      temp_password = "123456"
+      @customer = Customer.new(
+        name: rp[:customer_name],
+        email: rp[:customer_email],
+        phone: rp[:customer_phone],
+        password: temp_password,
+        password_confirmation: temp_password
+      )
+      unless @customer.save
+        flash[:alert] = "Customer could not be created: #{@customer.errors.full_messages.join(', ')}"
+        redirect_to new_record_path and return
+      end
     end
 
-    @vehicle = Vehicle.find_or_create_by(number_plate: rp[:vehicle_no]) do |v|
-      v.model = rp[:model]
-      v.customer_id = @customer.id
+    @vehicle = Vehicle.find_by(number_plate: rp[:vehicle_no])
+    unless @vehicle
+      @vehicle = Vehicle.new(
+        number_plate: rp[:vehicle_no],
+        model: rp[:model],
+        customer_id: @customer.id
+      )
+      unless @vehicle.save
+        flash[:alert] = "Vehicle could not be created: #{@vehicle.errors.full_messages.join(', ')}"
+        redirect_to new_record_path and return
+      end
     end
   end
 
@@ -111,7 +131,8 @@ class RecordsController < ApplicationController
 
   def create_service_tags
     rp = record_params
-    @tags = Tag.where(id: rp[:tag_ids]).to_a
+    valid_tag_ids = rp[:tag_ids].reject(&:blank?)
+    @tags = valid_tag_ids.present? ? Tag.where(id: valid_tag_ids).to_a : []
     puts("Selected Tag IDs: #{@tags}")
     if rp[:custom_tags].present?
       custom_tags = rp[:custom_tags].split(",").map(&:strip).reject(&:empty?)
@@ -121,8 +142,6 @@ class RecordsController < ApplicationController
         @tags << tag unless @tags.include?(tag)
       end
     end
-    @tags.each do |tg|
-      ServiceTag.find_or_create_by(record_id: @record.id, tag_id: tg.id)
-    end
+    @record.tags = @tags
   end
 end

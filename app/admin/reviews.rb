@@ -20,4 +20,18 @@ ActiveAdmin.register Review do
   filter :customer, as: :select, collection: proc { Customer.all.pluck(:name, :id) }
   filter :created_at
   filter :updated_at
+  filter :mechanic_name_search, as: :string, label: "Mechanic"
+
+  index do
+    selectable_column
+    column :id
+    column :content
+    column :reviewable_type
+    column :"Reviewable" do |resources|
+      resources.reviewable_id
+    end
+    column :customer
+    column :created_at
+    column :updated_at
+  end
 end

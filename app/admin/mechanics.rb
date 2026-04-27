@@ -65,6 +65,15 @@ ActiveAdmin.register Mechanic do
       end
     end
   end
+
+  form do |f|
+    f.inputs "Mechanic Details" do
+    f.input :name, as: :string
+    f.input :experience, as: :string
+    f.input :unlock_token
+    end
+  f.actions
+  end
   action_item :disable, only: :show do
     link_to "Disable Mechanic", disable_admin_mechanic_path(resource), method: :patch if !resource.access_locked?
   end

@@ -1,8 +1,6 @@
 class Record < ApplicationRecord
 
-  scope :latest_completed, -> {
-    where(status: "completed").order(updated_at: :desc)
-  }
+  
   validates :vehicle_id, :status, :internal_notes, presence: true
   before_validation :ensure_status_values
   attr_accessor :customer_notes
@@ -35,8 +33,5 @@ class Record < ApplicationRecord
   end
   def self.ransackable_attributes(_auth_object = nil)
     ["id", "internal_notes", "mechanic_id", "status", "total_cost", "vehicle_id", "created_at", "updated_at"]
-  end
-  def self.ransackable_scopes(_auth_object = nil)
-    [:latest_completed]
   end
 end

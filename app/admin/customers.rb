@@ -28,9 +28,10 @@ ActiveAdmin.register Customer do
   #   permitted << :other if params[:action] == 'create' && current_user.admin?
   #   permitted
   # end
-  filter :name
-  filter :phone
-  filter :email
+filter :name_cont, label: 'Name'
+filter :phone_cont, label: 'Phone'
+filter :email_cont, label: 'Email'
+  filter :vehicle_plate, as: :string, label: "Vehicle Plate"
 
   index do
     selectable_column
@@ -60,6 +61,16 @@ ActiveAdmin.register Customer do
       end
     end
   end
+
+  form do |f|
+    f.inputs "Customer Details" do
+    f.input :name, as: :string
+    f.input :phone, as: :string
+    f.input :unlock_token
+    end
+  f.actions
+  end
+
   action_item :disable, only: :show do
     link_to "Disable Customer", disable_admin_customer_path(resource), method: :patch if !resource.access_locked?
   end

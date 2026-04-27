@@ -15,5 +15,39 @@ ActiveAdmin.register Summary do
   #   permitted << :other if params[:action] == 'create' && current_user.admin?
   #   permitted
   # end
-  
+  index do
+    selectable_column
+    column :id
+    column :"Record Id" do |resources|
+      resources.record_id
+    end
+    column :summary_text
+    column :customer_notes
+    column :completed_at
+    column :created_at
+    column :updated_at
+    actions
+  end
+
+  show do
+    attributes_table do
+      row "Record Id" do |servicePart|
+        link_to servicePart.record.id, admin_record_path(servicePart.record)
+      end
+      row :summary_text
+      row :customer_notes
+      row :completed_at
+      row :created_at
+      row :updated_at
+    end
+  end
+
+  form do |f|
+    f.inputs "Summary Details" do
+      f.input :summary_text
+      f.input :customer_notes
+      f.input :completed_at, as: :datepicker
+    end
+  f.actions
+  end
 end

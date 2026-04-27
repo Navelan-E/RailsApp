@@ -23,3 +23,4 @@ function showToast() {
 // Keep your listeners as they are
 document.addEventListener("turbo:load", showToast);
 document.addEventListener("turbo:render", showToast);
+

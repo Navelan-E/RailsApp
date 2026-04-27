@@ -1,5 +1,4 @@
 ActiveAdmin.register Record do
-  
 
   batch_action :mark_as_completed do |ids|
     Record.where(id: ids).update_all(status: "completed", updated_at: Time.current)
@@ -43,12 +42,28 @@ ActiveAdmin.register Record do
   filter :created_at
   filter :updated_at
   filter :internal_notes
-  filter :latest_completed, as: :boolean, label: "Show Latest Completed"
 
+  index do
+    selectable_column
+    id_column
+    column "Vehicle" do |resource|
+      link_to resource.vehicle.number_plate, admin_vehicle_path(resource.vehicle)
+    end
+    column "Mechanic" do |resource|
+      if resource.mechanic&.name
+        link_to resource.mechanic&.name, admin_mechanic_path(resource.mechanic)
+      else 
+        "Unassigned"
+      end
+    end
+    column :status
+    column :total_cost
+      actions
+  end
   show do
     attributes_table do
       row :vehicle do |record|
-        link_to "Vehicle ##{record.vehicle.number_plate}", admin_vehicle_path(record.vehicle)
+        link_to record.vehicle.number_plate, admin_vehicle_path(record.vehicle)
       end
       row :mechanic do |record|
         if record.mechanic
@@ -75,19 +90,17 @@ ActiveAdmin.register Record do
 
   form do |f|
     f.inputs "Record Details" do
-      f.input :vehicle, as: :select, collection: Vehicle.all.map { |v| [v.number_plate, v.id] }
-      f.input :mechanic, as: :select, collection: Mechanic.all.map { |m| [m.name, m.id] }
-      f.input :status, as: :select, collection: Record.statuses.keys
+      f.input :vehicle, as: :select, collection: Vehicle.all.map { |v| [v.number_plate, v.id] }, input_html: { class: "select2" }
+      f.input :mechanic, as: :select, collection: Mechanic.all.map { |m| [m.name, m.id] }, input_html: { class: "select2" }
+      f.input :status, as: :select, collection: Record.statuses.keys, input_html: { class: "select2" }
       f.input :total_cost
       f.input :internal_notes
-      f.inputs "Parts Management" do
-        li do
-          link_to "Add New Parts", new_admin_part_path, target: "_blank", class: "button"
-        end
-      end
       f.inputs "Parts" do
+        li do
+          link_to "Add New Part", new_admin_part_path, target: "_blank", class: "button"
+        end
         f.has_many :service_parts, allow_destroy: true, new_record: "Add Part" do |op|
-          op.input :part_id, as: :select, collection: Part.pluck(:name, :id)
+          op.input :part_id, as: :select, collection: Part.pluck(:name, :id), input_html: { class: "select2" }
           op.input :quantity
         end
       end
@@ -95,17 +108,17 @@ ActiveAdmin.register Record do
         li do
           link_to "Add New Tags", new_admin_tag_path, target: "_blank", class: "button"
         end
-      end
       f.input :tags, 
         as: :select, 
         input_html: { multiple: true , style: "width: 20%"}, 
-        collection: Tag.all.map { |t| [t.tag, t.id] }
+        collection: Tag.all.map { |t| [t.tag, t.id] },
+        input_html: { class: "select2" }
+      end
     end
   f.actions
   end
 
-  action_item :mark_as_completed, only: :show do
-    link_to "Mark as Completed", mark_as_completed_admin_record_path(resource), method: :post if resource.pending? || resource.in_progress?
+  action_item :mark_all_completed, only: :index do
+    link_to "Mark All as Completed", mark_all_completed_admin_records_path, method: :post
   end
-
 end

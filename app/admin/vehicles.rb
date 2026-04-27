@@ -22,11 +22,20 @@ ActiveAdmin.register Vehicle do
       row :number_plate
       row :created_at
       row :updated_at
-      row :records do |vehicle|
+      row :"Service Records" do |vehicle|
         vehicle.records.map do |record|
-          link_to "Record ##{record.id} created_at #{record.created_at}", admin_record_path(record)
+          link_to "#{record.id}" , admin_record_path(record)
         end.join(", ").html_safe
       end
     end
+  end
+
+  form do |f|
+    f.inputs "Record Details" do
+      f.input :customer, as: :select, collection: Customer.all.map { |c| [c.name, c.id] }, input_html: { class: "select2" }
+      f.input :model
+      f.input :number_plate
+    end
+  f.actions
   end
 end
