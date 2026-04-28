@@ -2,8 +2,8 @@
 
 <% @summary.each do |summary| %>
   <div class = "card">
-    <h2><%= link_to "Summaries ##{summary.id}", summary_path(summary) %></h2>
-    <p>Vehicle: <%= summary.record.vehicle.number_plate %> - <%= summary.record.vehicle.model %></p>
+    <h2><%= link_to "#{summary.record.vehicle.number_plate} -  #{summary.record.created_at.strftime('%d %b %Y')}", summary_path(summary) %></h2>
+    <p>Model: <%= summary.record.vehicle.model %></p>
     <p>Customer: <%= summary.record.vehicle.customer.name %> - <%= summary.record.vehicle.customer.phone %></p>
     <p>Issue: <%= summary.summary_text %></p>
     <p>Assigned Mechanic: <%= summary.record.mechanic&.name || "Unassigned" %></p>

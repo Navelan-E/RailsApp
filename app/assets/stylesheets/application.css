@@ -14,7 +14,7 @@
 
 body {
   font-family: 'Inter', sans-serif;
-  background: linear-gradient(135deg, #1e2230 0%, #161925 100%);
+  background: linear-gradient(135deg, var(--bg-main) 0%, var(--bg-card) 100%);
   margin: 0px;
   color: var(--text-main);
   -webkit-font-smoothing: antialiased;
@@ -24,14 +24,12 @@ body {
 }
 
 .nav {
-  background: rgba(30, 34, 48, 0.95);
+  background: rgba(0, 0, 0, 0.2);
+  background: var(--nav-bg, rgba(30, 34, 48, 0.95));
   padding: 24px 40px;
   border-bottom: 2px solid var(--accent-teal);
   display: flex;
   justify-content: center;
-  letter-spacing: 1px;
-  text-transform: uppercase;
-  box-shadow: 0 4px 15px rgba(0, 0, 0, 0.3);
 }
 
 .nav a {
@@ -175,12 +173,15 @@ a.button-link:hover {
 .login_container {
   flex: 1;
   display: flex;
-  margin: auto 60vw;
-  flex-direction: row;
+  flex-direction: column;
   justify-content: center;
   align-items: center;
+  border-radius: 15px;
+  border: 2px solid rgba(255, 255, 255, 0.1);
+  border-color: var(--accent-gold);
   width: 40vw;
-  height: 50vh;
+  height: 20vh;
+  margin: 5px ;
 }
 
 .login_card {
@@ -188,18 +189,20 @@ a.button-link:hover {
   align-items: end;
   justify-content: center;
   border: 2px solid rgba(255, 255, 255, 0.1);
-  height: 100%;
-  width: 100%;
+  height: 10%;
+  width: 50%;
   border-radius: 15px;
   backdrop-filter: blur(10px);
   background: rgba(255, 255, 255, 0.05);
   transition: all 0.3s ease;
+  padding: 15px;
+  margin: 10px 10px;
 }
 
 .login_card h3 {
   text-decoration: none;
   font-size: 18px;
-  color: #ffffff;
+  color: var(--login-text-color);
   text-shadow: 0 2px 8px rgba(0, 0, 0, 0.4);
 }
 
@@ -225,19 +228,62 @@ a.button-link:hover {
   align-items: center;
   justify-content: center;
   height: 40vh;
-  background: linear-gradient(135deg, rgba(30, 34, 48, 0.9) 0%, rgba(22, 25, 37, 0.8) 100%);
-  border: 2px solid rgba(0, 255, 136, 0.5);
+  background: var(--content-bg);
+  border: 2px solid var(--border-color);
+  box-shadow: var(--content-shadow);  border: 2px solid rgba(0, 255, 136, 0.5);
   box-shadow: 0 0 15px rgba(0, 255, 136, 0.2);
   border-radius: 15px;
+  margin-left: auto;
 }
 
 a {
   color: #2a7ae2;
   text-decoration: none;
   transition: color 0.2s ease-in-out;
+  font:medium;
 }
 
 a:hover {
   color: #3174ea;
   text-decoration: underline;
+}
+
+.customer-theme {
+  --nav-bg: rgba(30, 34, 48, 0.95);
+  --content-bg: linear-gradient(135deg, rgba(30, 34, 48, 0.9), rgba(22, 25, 37, 0.8));
+  --border-color: rgba(0, 255, 136, 0.5);
+  --content-shadow: 0 0 15px rgba(0, 255, 136, 0.2);
+  --login-text-color: #ffffff;
+}
+
+.mechanic-theme {
+  --accent: #ff8c42;
+  --accent-gold: #ffb347;
+  --accent-teal: #ff9f1c;
+  --accent-purple: #ff6a00;
+
+  --bg-main: #fdf6f0;
+  --bg-card: #ffffff;
+
+  --text-main: #2a2a2a;
+  --text-light: #5c5c5c;
+
+  --border-dim: rgba(255, 140, 66, 0.25);
+  --nav-bg: rgba(236, 129, 63, 0.285);
+  --content-bg: linear-gradient(135deg, #fff8f2, #fffdfb);
+  --border-color: rgba(255, 140, 66, 0.4);
+  --content-shadow: 0 0 20px rgba(255, 140, 66, 0.15);
+  --login-text-color: #ffb247cf;
+}
+
+.mechanic-theme .nav {
+  border-bottom: 2px solid var(--accent-gold);
+}
+
+.mechanic-theme .card {
+  box-shadow: 0 10px 30px rgba(255, 138, 66, 0.273);
+}
+
+.mechanic-theme .btn {
+  background: linear-gradient(135deg, var(--accent) 0%, var(--accent-gold) 100%);
 }

@@ -2,8 +2,8 @@
   <%= link_to 'Summaries', summaries_path %>
   <%= link_to 'Reviews', reviews_index_path %>
   <%= link_to 'Mechanics', mechanics_path %>
+  <%= link_to 'Records', records_path %>
   <% if mechanic_signed_in? || admin_user_signed_in? %>
-    <%= link_to 'Records', records_path %>
     <%= link_to 'Customers', customers_index_path %>
     <%= link_to 'Vehicles', vehicles_path %>
     <%= link_to 'Parts', parts_path %>
