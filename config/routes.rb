@@ -80,7 +80,12 @@ Rails.application.routes.draw do
           patch :unlock
         end
       end
-      resources :customers
+      resources :customers do
+    member do
+        patch :disable
+        patch :unlock
+      end
+    end
       resources :records
     end
   end
