@@ -72,4 +72,16 @@ Rails.application.routes.draw do
 
   root to: "home#index"
   
+  namespace :api do
+    namespace :v1 do
+      resources :mechanics do
+        member do
+          patch :disable
+          patch :unlock
+        end
+      end
+      resources :customers
+      resources :records
+    end
+  end
 end
