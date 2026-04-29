@@ -1,4 +1,5 @@
 Rails.application.routes.draw do
+  use_doorkeeper
   devise_for :admin_users
   ActiveAdmin.routes(self)
   get 'profile/show'
@@ -71,7 +72,7 @@ Rails.application.routes.draw do
   end
 
   root to: "home#index"
-  
+
   namespace :api do
     namespace :v1 do
       resources :mechanics do

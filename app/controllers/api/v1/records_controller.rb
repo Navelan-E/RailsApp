@@ -1,5 +1,6 @@
 class Api::V1::RecordsController < Api::V1::BaseController
-before_action :set_record, only: [:edit, :update, :show]
+  before_action :doorkeeper_authorize!
+  before_action :set_record, only: [:edit, :update, :show]
   before_action :create_vehicle_customer_and_tags, only: [:create]
   before_action :set_parts, only: [:update]
   after_action :create_service_tags, only: [:create]

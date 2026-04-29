@@ -1,4 +1,5 @@
-class Api::V1::PartsController < ApplicationController
+class Api::V1::PartsController < Api::V1::BaseController
+before_action :doorkeeper_authorize!
 before_action :set_part, only: [:edit, :update]
   def index
     parts = Part.all

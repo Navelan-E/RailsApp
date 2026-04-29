@@ -1,5 +1,5 @@
 class Api::V1::CustomersController < Api::V1::BaseController
-
+before_action :doorkeeper_authorize!
   def index
     customers = Customer.all
     render json: customers
@@ -53,10 +53,10 @@ class Api::V1::CustomersController < Api::V1::BaseController
       if @customer.access_locked?
         @customer.unlock_access!
       end
-      render json: { message: "Unloacked successfully",
+      render json: { message: "Unlocked successfully",
       }, status: :ok
     else
-      render json: { error: "Customer not found.",
+      render json: { error: "Customer not found."
       }, status: :not_found
     end
   end

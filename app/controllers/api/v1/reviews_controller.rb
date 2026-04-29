@@ -1,4 +1,5 @@
-class Api::V1::ReviewsController < ApplicationController
+class Api::V1::ReviewsController < Api::V1::BaseController
+  before_action :doorkeeper_authorize!
   def index
     all_reviews = Review.all
     render json: all_reviews

@@ -273,7 +273,7 @@ a:hover {
   --content-bg: linear-gradient(135deg, #fff8f2, #fffdfb);
   --border-color: rgba(255, 140, 66, 0.4);
   --content-shadow: 0 0 20px rgba(255, 140, 66, 0.15);
-  --login-text-color: #ffb247cf;
+  --login-text-color: #b7751fcf;
 }
 
 .mechanic-theme .nav {

@@ -1,4 +1,5 @@
-class Api::V1::SummariesController < ApplicationController
+class Api::V1::SummariesController < Api::V1::BaseController
+before_action :doorkeeper_authorize!
 def index
     summary = Summary.all
     render json: summary

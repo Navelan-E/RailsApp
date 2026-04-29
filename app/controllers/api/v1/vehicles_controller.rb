@@ -1,4 +1,5 @@
-class Api::V1::VehiclesController < ApplicationController
+class Api::V1::VehiclesController < Api::V1::BaseController
+  before_action :doorkeeper_authorize!
   before_action :fetch_records, only: %i[show]
   def index
     if params[:search]
@@ -44,7 +45,6 @@ class Api::V1::VehiclesController < ApplicationController
         vehicle: vehicle
     }
     else
-      
       render json:{
         error: 'Failed to add vehicle.'
       }, status: :unprocessable_entity
