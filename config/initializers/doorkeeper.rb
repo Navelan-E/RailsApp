@@ -7,7 +7,9 @@ Doorkeeper.configure do
   orm :active_record
   skip_client_authentication_for_password_grant true
 
-  # Enable support for multiple database configurations with read replicas.
+  default_scopes :public
+  optional_scopes :"customer:read", :"customer:write", :"mechanic:write", :"mechanic:read", :"part:write", :"record:read" , :"record:write", :"review:read", :"review:write", :"vehicle:write", :"vehicle:read"
+  #  Enable support for multiple database configurations with read replicas.
   # When enabled, Doorkeeper will wrap database write operations to ensure they
   # use the primary (writable) database when automatic role switching is enabled.
   #
@@ -30,14 +32,14 @@ Doorkeeper.configure do
       when "customer"
         Customer.find_for_database_authentication(email: params[:username])
     end
-
-    return nil unless user&.valid_password?(params[:password])
-
-    user.define_singleton_method(:resource_owner_type) do
-      user.class.name
+    if user&.valid_password?(params[:password])
+      user.define_singleton_method(:resource_owner_type) do
+        user.class.name
+      end
+      user
+    else
+      nil
     end
-
-    user
   end
 
   # If you didn't skip applications controller from Doorkeeper routes in your application routes.rb
@@ -458,9 +460,21 @@ Doorkeeper.configure do
   # Hook into the strategies' request & response life-cycle in case your
   # application needs advanced customization or logging:
   #
-  # before_successful_strategy_response do |request|
-  #   puts "BEFORE HOOK FIRED! #{request}"
-  # end
+  before_successful_strategy_response do |request|
+    Rails.logger.info("hlooooooo #{request}")
+    owner = request.resource_owner
+    Rails.logger.info("hlooooooo #{owner}")
+    scope = "public "
+    scope +=
+      case owner
+      when Mechanic
+        "customer:read mechanic:write mechanic:read part:write record:read record:write review:read vehicle:read"
+      when Customer
+        "customer:write customer:read mechanic:read record:read review:write review:read vehicle:write vehicle:read"
+      end
+
+    request.access_token.update!(scopes: scope.to_s)
+  end
   #
   # after_successful_strategy_response do |request, response|
   #   puts "AFTER HOOK FIRED! #{request}, #{response}"

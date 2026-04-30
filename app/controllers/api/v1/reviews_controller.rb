@@ -1,39 +1,38 @@
 class Api::V1::ReviewsController < Api::V1::BaseController
-  before_action :doorkeeper_authorize!
+  before_action -> { doorkeeper_authorize! :"review:read" }
+  before_action -> { doorkeeper_authorize! :"review:write" }, only: [:create, :destroy]
   def index
     all_reviews = Review.all
     render json: all_reviews
   end
 
-  def edit
-    review = Review.find(params[:id])
-  end
-
   def update
-    review = Review.find(params[:id])
+    unless review = Review.find_by(id: params[:id])
+      render json: {
+        error: "Review not found"
+      }, status: :not_found
+      return
+    end
     if review.update(review_params)
       render json:{
         message: "Review updated successfully.",
         review: review
     },status: :ok
     else
-      flash.now[:alert] = "Failed to update review."
       render json: {
         error: "Failed to update review."
-      }, status: unprocessable_entity
+      }, status: :unprocessable_entity
     end
   end
 
   def show
-    review = Review.find(params[:id])
+    unless review = Review.find_by(id: params[:id])
+      render json: {
+        error: "Review no found"
+      }, status: :not_found
+      return
+    end
     render json: review
-  end
-
-  def new
-    puts("hlo.. #{params[:record_id]}")
-    @record = Record.find_by(id: params[:record_id])
-    puts(@record.inspect)
-    @review = @record.reviews.build
   end
 
   def create
@@ -46,11 +45,11 @@ class Api::V1::ReviewsController < Api::V1::BaseController
       else
         record
     end
-    review = Review.new(reviewable: reviewable, **review_params, customer_id: current_customer.id)
+    review = Review.new(reviewable: reviewable, **review_params, customer_id: doorkeeper_token&.resource_owner_id)
     if review.save
       render json:{ message: "Review added successfully.",
         review: review
-      }, status: :ok
+      }, status: :created
     else
       render json: {
         error: "Failed to add review."
@@ -60,11 +59,14 @@ class Api::V1::ReviewsController < Api::V1::BaseController
   
   def destroy
     puts "Destroying review with ID: #{params[:id]}"
-    review = Review.find(params[:id])
+    unless review = Review.find_by(id: params[:id])
+      render json: {
+        error: "Review not found"
+      }, status: :not_found
+      return
+    end
     review.destroy
-    render json:{
-      message: "Deleted Successfully"
-    },status: :ok
+    head :no_content
   end
 
   private

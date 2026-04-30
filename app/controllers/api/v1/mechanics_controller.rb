@@ -1,5 +1,6 @@
 class Api::V1::MechanicsController < Api::V1::BaseController
-    before_action :doorkeeper_authorize!
+    before_action -> { doorkeeper_authorize! :"mechanic:read" }
+    before_action -> { doorkeeper_authorize! :"mechanic:write" }, except: [:index]
     def index
         if params[:q].present?
             mechanics = Mechanic.where("name ILIKE ?", "%#{params[:q]}%")
@@ -41,7 +42,7 @@ class Api::V1::MechanicsController < Api::V1::BaseController
             render json:{
               message: "Created Successfully",
               mechanic: mechanic
-            }, status: :ok
+            }, status: :created
         else
             render json:{
               error: mechanic.errors.full_messages.join(", ")
@@ -62,7 +63,7 @@ class Api::V1::MechanicsController < Api::V1::BaseController
       mechanic = Mechanic.find_by(id: params[:id])
         if mechanic
             if mechanic.destroy
-                render json: { message: "Mechanic deleted successfully" }, status: :ok
+                head :no_content
             else
                 render json: { errors: mechanic.errors.full_messages }, status: :unprocessable_entity
             end

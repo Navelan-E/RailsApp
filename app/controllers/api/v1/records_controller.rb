@@ -1,5 +1,6 @@
 class Api::V1::RecordsController < Api::V1::BaseController
-  before_action :doorkeeper_authorize!
+  before_action -> { doorkeeper_authorize! :"record:read" }
+  before_action -> { doorkeeper_authorize! :"record:write" }, except: [:index, :show]
   before_action :set_record, only: [:edit, :update, :show]
   before_action :create_vehicle_customer_and_tags, only: [:create]
   before_action :set_parts, only: [:update]
@@ -20,6 +21,14 @@ class Api::V1::RecordsController < Api::V1::BaseController
   end
 
   def show
+    record = Record.find_by(id: params[:id])
+    if record
+      render json: record
+    else
+      render json:{
+        error: "Record Not found"
+      }, status: :not_found
+    end
   end
 
   def new
@@ -28,20 +37,20 @@ class Api::V1::RecordsController < Api::V1::BaseController
 
   def create
     rp = record_params
-    record = Record.new(
+    @record = Record.new(
       internal_notes: rp[:internal_notes],
       vehicle_id: @vehicle.id,
       status: "pending",
     )
 
-    if record.save
+    if @record.save
       render json: {
         message: "Succesfully created",
-        record: record
-      }, status: :ok
+        record: @record
+      }, status: :created
     else
       render json:{
-        error: record.errors.full_messages.join(", ")
+        error: @record.errors.full_messages.join(", ")
       }, status: :unprocessable_entity
     end
   end
@@ -52,6 +61,13 @@ class Api::V1::RecordsController < Api::V1::BaseController
   end
 
   def update
+    record = Record.find_by(id: params[:id])
+    unless record
+      render json:{
+        error: "Record Not found"
+      }, status: :not_found
+      return
+    end
     @parts = Part.all
     param = params[:record].permit(:internal_notes, :status, :mechanic_id, :total_cost)
     puts "Update Params: #{param}"
@@ -85,14 +101,13 @@ class Api::V1::RecordsController < Api::V1::BaseController
   end
 
   def set_record
-    record = Record.find(params[:id])
     @mechanics = Mechanic.all
   end
 
   def create_vehicle_customer_and_tags
     rp = record_params
     puts "Record Params: #{rp}"
-    
+
     @customer = Customer.find_by(phone: rp[:customer_phone])
     unless @customer
       temp_password = "123456"
@@ -106,7 +121,7 @@ class Api::V1::RecordsController < Api::V1::BaseController
       unless @customer.save
         render json: {
           error: @customer.errors.full_messages.join(', ')
-        },status: unprocessable_entity
+        },status: :unprocessable_entity
       end
     end
 
@@ -120,7 +135,7 @@ class Api::V1::RecordsController < Api::V1::BaseController
       unless @vehicle.save
         render json: {
           error: @vehicle.errors.full_messages.join(', ')
-        },status: unprocessable_entity
+        },status: :unprocessable_entity
       end
     end
   end
@@ -130,7 +145,6 @@ class Api::V1::RecordsController < Api::V1::BaseController
     quantity = params.dig(:record, :part_quantity)
     puts("Exitting")
     return if part_id.blank? || quantity.to_i <= 0
-    puts("Cheated not exits")
     @service_part = ServicePart.find_or_initialize_by(record_id: record.id, part_id: params[:record][:part_id])
     @service_part.quantity = params[:record][:part_quantity]
     if @service_part.save
@@ -138,7 +152,7 @@ class Api::V1::RecordsController < Api::V1::BaseController
     else
       render json: {
           error: "Failed to update path"
-        },status: unprocessable_entity
+        },status: :unprocessable_entity
     end
   end
 
@@ -155,6 +169,6 @@ class Api::V1::RecordsController < Api::V1::BaseController
         @tags << tag unless @tags.include?(tag)
       end
     end
-    record.tags = @tags
+    @record.tags = @tags
   end
 end

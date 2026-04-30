@@ -6,5 +6,6 @@
     <p>Assigned Mechanic: <%= @summary.record.mechanic&.name || "Unassigned" %></p>
     <p>Customer Notes: <%= @summary.customer_notes %></p>
     <p>Total Cost: <%= @summary.record.total_cost || "Not Calculated" %></p>
-  </div>
     <%= link_to 'Add Review', new_review_path(record_id: @summary.record_id) %>
+  </div>
+    

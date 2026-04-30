@@ -87,7 +87,7 @@ body {
   margin: 80px auto;
   padding: 40px;
   border-radius: 20px;
-  background: rgba(42, 47, 66, 0.8);
+  background: var(--form-bg)
   backdrop-filter: blur(12px);
   border: 2px solid var(--accent-teal);
   box-shadow: 0 8px 32px rgba(0, 0, 0, 0.5);
@@ -254,6 +254,7 @@ a:hover {
   --border-color: rgba(0, 255, 136, 0.5);
   --content-shadow: 0 0 15px rgba(0, 255, 136, 0.2);
   --login-text-color: #ffffff;
+  --form-bg: rgba(42, 47, 66, 0.8);
 }
 
 .mechanic-theme {
@@ -264,7 +265,7 @@ a:hover {
 
   --bg-main: #fdf6f0;
   --bg-card: #ffffff;
-
+  --form-bg: #efc3a5;
   --text-main: #2a2a2a;
   --text-light: #5c5c5c;
 

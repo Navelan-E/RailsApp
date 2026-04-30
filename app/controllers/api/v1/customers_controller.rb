@@ -1,5 +1,7 @@
 class Api::V1::CustomersController < Api::V1::BaseController
-before_action :doorkeeper_authorize!
+before_action -> { doorkeeper_authorize! :"customer:read" }
+before_action -> { doorkeeper_authorize! :"customer:write" }, only: [:update,:disable]
+
   def index
     customers = Customer.all
     render json: customers
@@ -21,7 +23,7 @@ before_action :doorkeeper_authorize!
     if customer&.update(customer_params)
       render json: { message: "Created successfully",
         customer: customer
-      }, status: :ok                                                                                                                                                                                                                    
+      }, status: :ok
     else
       if customer
         render json: {

@@ -4,10 +4,13 @@
   <%= submit_tag "Search" %>
 <% end %>
 <% @vehicles.each do |vehicle| %>
+  <% if mechanic_signed_in? || (customer_signed_in? && current_customer == vehicle.customer) %>
   <div class = "card">
     <p><%= vehicle.number_plate %></p>
     <p><%= vehicle.model %></p>
+    <p><%= vehicle.customer.name if mechanic_signed_in?%>
     <p><%= link_to 'View Details', vehicles_show_path(vehicle.id) %></p>
   </div>
+  <%end%>
 <% end %>
 <hr>

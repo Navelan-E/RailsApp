@@ -88,6 +88,11 @@ Rails.application.routes.draw do
       end
     end
       resources :records
+      resources :parts
+      resources :reviews
+      resources :vehicles
+      resources :summaries
+      resources :tags
     end
   end
 end

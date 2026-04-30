@@ -1,8 +1,8 @@
 class Vehicle < ApplicationRecord
   validates :number_plate, :model, :customer_id, presence: true
   belongs_to :customer
-  has_many :records
-  has_many :reviews, as: :reviewable
+  has_many :records, dependent: :destroy
+  has_many :reviews, as: :reviewable, dependent: :destroy
 
   def self.ransackable_associations(_auth_object = nil)
     ["customer", "records", "reviews"]
