@@ -22,8 +22,15 @@ ActiveAdmin.register ServicePart do
   #   permitted << :other if params[:action] == 'create' && current_user.admin?
   #   permitted
   # end
-  filter :record, as: :select, collection: Record.all.map { |r| ["Record ##{r.id} - #{r.vehicle.number_plate}", r.id] }, input_html: { class: "select2" }
-  filter :part, as: :select, collection: Part.all.map { |p| [p.name, p.id] }, input_html: { class: "select2" }
+  filter :record, as: :select, collection: -> {
+    Record.includes(:vehicle).map do |r|
+      ["Record ##{r.id} - #{r.vehicle.number_plate}", r.id]
+    end
+  }, input_html: { class: "select2" }
+
+  filter :part, as: :select, collection: -> {
+    Part.pluck(:name, :id)
+  }, input_html: { class: "select2" }
   filter :created_at
   filter :updated_at
 
@@ -58,8 +65,12 @@ ActiveAdmin.register ServicePart do
 
   form do |f|
     f.inputs "Service Details" do
-    f.input :part, as: :select, collection: Part.all.map { |p| [p.name, p.id] }, input_html: { class: "select2" }
-    f.input :record, as: :select, collection: Record.all.map { |r| [r.id] }, input_html: { class: "select2" }
+    f.input :part, as: :select, collection: -> {
+      Part..pluck(:name, :id)
+    }, input_html: { class: "select2" }
+    f.input :record, as: :select, collection: -> {
+      Record..pluck(:name, :id)
+    }, input_html: { class: "select2" }
     f.input :quantity
     end
   f.actions

@@ -35,9 +35,13 @@ ActiveAdmin.register Record do
   #   permitted
   # end
 
-  filter :vehicle, as: :select, collection: Vehicle.all.map { |v| [v.number_plate, v.id] }
-  filter :mechanic, as: :select, collection: Mechanic.all.map { |m| [m.name, m.id] }
-  filter :status, as: :select, collection: Record.statuses.keys
+  filter :vehicle, as: :select, collection: -> {
+    Vehicle.pluck(:number_plate, :id)
+  }, input_html: { class: "select2" }
+  filter :mechanic, as: :select, collection: -> {
+    Mechanic.pluck(:name, :id)
+  }, input_html: { class: "select2" }
+  filter :status, as: :select, collection: Record.statuses.keys, input_html: { class: "select2" }
   filter :total_cost
   filter :created_at
   filter :updated_at
@@ -90,8 +94,12 @@ ActiveAdmin.register Record do
 
   form do |f|
     f.inputs "Record Details" do
-      f.input :vehicle, as: :select, collection: Vehicle.all.map { |v| [v.number_plate, v.id] }, input_html: { class: "select2" }
-      f.input :mechanic, as: :select, collection: Mechanic.all.map { |m| [m.name, m.id] }, input_html: { class: "select2" }
+      f.input :vehicle, as: :select, collection:-> {
+        Vehicle.pluck(:number_plate, :id)
+      }, input_html: { class: "select2" }
+      f.input :mechanic, as: :select, collection: -> {
+        Mechanic.pluck(:name, :id)
+      }, input_html: { class: "select2" }
       f.input :status, as: :select, collection: Record.statuses.keys, input_html: { class: "select2" }
       f.input :total_cost
       f.input :internal_notes
@@ -111,7 +119,9 @@ ActiveAdmin.register Record do
       f.input :tags, 
         as: :select, 
         input_html: { multiple: true , style: "width: 20%"}, 
-        collection: Tag.all.map { |t| [t.tag, t.id] },
+        collection: -> {
+          Tag.pluck(:tag, :id)
+        },
         input_html: { class: "select2" }
       end
     end

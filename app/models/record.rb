@@ -1,6 +1,4 @@
 class Record < ApplicationRecord
-
-  
   validates :vehicle_id, :status, :internal_notes, presence: true
   before_validation :ensure_status_values
   attr_accessor :customer_notes

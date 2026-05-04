@@ -15,5 +15,5 @@ ActiveAdmin.register Tag do
   #   permitted << :other if params[:action] == 'create' && current_user.admin?
   #   permitted
   # end
-  
+
 end

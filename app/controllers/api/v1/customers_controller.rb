@@ -16,7 +16,7 @@ before_action -> { doorkeeper_authorize! :"customer:write" }, only: [:update,:di
       render json: { error: "Customer not found" }, status: :not_found
     end
   end
-  
+
   def update
     puts("Customer Update Params: #{params}")
     customer = Customer.find_by(id: params[:id])
