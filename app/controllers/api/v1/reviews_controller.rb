@@ -39,9 +39,9 @@ class Api::V1::ReviewsController < Api::V1::BaseController
     record = Record.find(params[:record_id])
     reviewable = case params.dig(:review, :review_type)
       when "Mechanic"
-        record.mechanic
+        record&.mechanic
       when "Vehicle"
-        record.vehicle
+        record&.vehicle
       else
         record
     end

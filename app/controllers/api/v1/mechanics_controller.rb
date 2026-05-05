@@ -20,7 +20,7 @@ class Api::V1::MechanicsController < Api::V1::BaseController
                 }, status: :ok
             else
                 render json:{
-                    error: mechanic.errors.full_messages.join(", ")
+                    error: Array(mechanic.errors&.full_messages).join(", ")
                 }, status: :unprocessable_entity
             end
         else
@@ -28,10 +28,6 @@ class Api::V1::MechanicsController < Api::V1::BaseController
                     error: "Mechanic not found"
                 }, status: :not_found
         end
-    end
-
-    def new
-        mechanic = Mechanic.new
     end
 
     def create
@@ -52,6 +48,11 @@ class Api::V1::MechanicsController < Api::V1::BaseController
 
     def show
         mechanic = Mechanic.find_by(id: params[:id])
+        unless mechanic
+            render json: { error: "Mechanic not found."
+               }, status: :not_found
+            return
+        end
         render json: mechanic
     end
 

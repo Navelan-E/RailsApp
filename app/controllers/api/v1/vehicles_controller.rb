@@ -4,7 +4,7 @@ class Api::V1::VehiclesController < Api::V1::BaseController
   before_action :fetch_records, only: %i[show]
   def index
     if params[:search]
-      vehicles = Vehicle.where("name LIKE ?", "%#{params[:search]}%")
+      vehicles = Vehicle.where("number_plate LIKE ?", "%#{params[:search]}%")
     else
       vehicles = Vehicle.all
     end
@@ -30,10 +30,7 @@ class Api::V1::VehiclesController < Api::V1::BaseController
 
   def fetch_records
     vehicle = Vehicle.find_by(id: params[:vehicle_id])
-    @records = []
-    if vehicle
-      @records = vehicle.records
-    end
+    @records = (vehicle&.records).to_a()
   end
 
   def create

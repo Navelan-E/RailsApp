@@ -1,9 +1,9 @@
 class Api::V1::RecordsController < Api::V1::BaseController
   before_action -> { doorkeeper_authorize! :"record:read" }
   before_action -> { doorkeeper_authorize! :"record:write" }, except: [:index, :show]
-  before_action :set_record, only: [:edit, :update, :show]
+  before_action :set_record, only: [:update, :show]
   before_action :create_vehicle_customer_and_tags, only: [:create]
-  before_action :set_parts, only: [:update]
+  after_action :set_parts, only: [:update]
   after_action :create_service_tags, only: [:create]
   def index
     if params[:q].present?
@@ -31,10 +31,6 @@ class Api::V1::RecordsController < Api::V1::BaseController
     end
   end
 
-  def new
-    record = Record.new
-  end
-
   def create
     rp = record_params
     @record = Record.new(
@@ -55,35 +51,28 @@ class Api::V1::RecordsController < Api::V1::BaseController
     end
   end
 
-  def edit
-    @mechanics = Mechanic.all
-    @parts = Part.all
-  end
-
   def update
-    record = Record.find_by(id: params[:id])
-    unless record
-      render json:{
-        error: "Record Not found"
-      }, status: :not_found
-      return
-    end
+    @record = Record.find_by(id: params[:id])
+    return render json: { error: "Record Not found" }, status: :not_found unless @record
     @parts = Part.all
     param = params[:record].permit(:internal_notes, :status, :mechanic_id, :total_cost)
     puts "Update Params: #{param}"
-    record.customer_notes = params.dig(:record, :customer_notes)
-    if record.update(param)
-      puts "Record updated: #{record.inspect}"
-      render json: {
-        message: "Record updated successfully",
-        record: record
-    },status: :ok
-    else
-      @mechanics = Mechanic.all
-      render json:{
-        error: record.errors.full_messages
-      }, status: :unprocessable_entity
+    @record.customer_notes = params.dig(:record, :customer_notes)
+    ActiveRecord::Base.transaction do
+      @record.update!(param)
+
+      unless set_parts
+        raise ActiveRecord::Rollback
+      end
     end
+
+    render json: {
+      message: "Record updated successfully",
+      record: @record
+    }, status: :ok
+
+  rescue ActiveRecord::RecordInvalid
+    render json: { error: "Update failed" }, status: :unprocessable_entity
   end
 
   def record_params
@@ -121,7 +110,7 @@ class Api::V1::RecordsController < Api::V1::BaseController
       unless @customer.save
         render json: {
           error: @customer.errors.full_messages.join(', ')
-        },status: :unprocessable_entity
+        }, status: :unprocessable_entity
       end
     end
 
@@ -144,15 +133,14 @@ class Api::V1::RecordsController < Api::V1::BaseController
     part_id = params.dig(:record, :part_id)
     quantity = params.dig(:record, :part_quantity)
     puts("Exitting")
-    return if part_id.blank? || quantity.to_i <= 0
-    @service_part = ServicePart.find_or_initialize_by(record_id: record.id, part_id: params[:record][:part_id])
+    return true if part_id.blank? || quantity.to_i <= 0
+    @service_part = ServicePart.find_or_initialize_by(record_id: @record.id, part_id: params[:record][:part_id])
     @service_part.quantity = params[:record][:part_quantity]
     if @service_part.save
       @part = Part.find(params[:record][:part_id])
+      true
     else
-      render json: {
-          error: "Failed to update path"
-        },status: :unprocessable_entity
+      false
     end
   end
 

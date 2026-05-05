@@ -21,7 +21,7 @@ before_action -> { doorkeeper_authorize! :"customer:write" }, only: [:update,:di
     puts("Customer Update Params: #{params}")
     customer = Customer.find_by(id: params[:id])
     if customer&.update(customer_params)
-      render json: { message: "Created successfully",
+      render json: { message: "Updated successfully",
         customer: customer
       }, status: :ok
     else
@@ -35,7 +35,7 @@ before_action -> { doorkeeper_authorize! :"customer:write" }, only: [:update,:di
       end
     end
   end
-  
+
   def disable
     puts("Disable Customer Params: #{params}")
     @customer = Customer.find_by(id: params[:id])
