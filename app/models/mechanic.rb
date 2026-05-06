@@ -5,6 +5,7 @@ class Mechanic < ApplicationRecord
          :recoverable, :rememberable, :validatable,
          :lockable
     validates :name, :experience, presence: true
+    validates :experience, numericality: { only_integer: false }
     before_validation :ensure__values
     has_many :records, dependent: :nullify
     has_many :reviews, as: :reviewable, dependent: :destroy

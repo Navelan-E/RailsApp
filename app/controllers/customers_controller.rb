@@ -1,6 +1,7 @@
 class CustomersController < ApplicationController
-before_action :authenticate_pros?, except: [:update,:disable]
-before_action :any_signed_in?
+  before_action :authenticate_pros?, except: [:update,:disable,:unlock]
+  before_action :any_signed_in?, except: [:update,:disable,:unlock]
+  before_action :authenticate_customer!, only: [:unlock]
   def index
     @customers = Customer.all
   end
@@ -17,11 +18,16 @@ before_action :any_signed_in?
   def update
     puts("Customer Update Params: #{params}")
     @customer = Customer.find_by(id: params[:id])
+    unless @customer
+      redirect_to root_path, alert: "Customer not found."
+      return
+    end
+    
     if @customer.update(customer_params)
-      redirect_to profile_show_path, notice: "Customer updated successfully."
+      redirect_to root_path, notice: "Customer updated successfully."
     else
       flash.now[:alert] = @customer.errors.full_messages.join(", ")
-      render :edit, status: :unprocessable_entity
+      redirect_to root_path, status: :unprocessable_entity
     end
   end
 
@@ -32,23 +38,25 @@ before_action :any_signed_in?
   def disable
     puts("Disable Customer Params: #{params}")
     @customer = Customer.find_by(id: params[:id])
-    if @customer
-      @customer.lock_access!
-      redirect_to root_path, notice: "Customer disabled successfully."
-    else
-      redirect_to profile_show_path(@customer), alert: "Customer not found."
+    unless @customer
+      redirect_to root_path, alert: "Customer not found."
+      return
     end
+    
+    @customer.lock_access!
+    redirect_to root_path, notice: "Customer disabled successfully."
   end
 
   def unlock
     @customer = Customer.find_by(id: params[:id])
-    if @customer
-      if @customer.access_locked?
-        @customer.unlock_access!
-      end
-      redirect_to customers_show_path(@customer), notice: "Customer unlocked successfully."
-    else
-      redirect_to customers_show_path(@customer), alert: "Customer not found."
+    unless @customer
+      redirect_to root_path, alert: "Customer not found."
+      return
     end
+    
+    if @customer.access_locked?
+      @customer.unlock_access!
+    end
+    redirect_to root_path, notice: "Customer unlocked successfully."
   end
 end

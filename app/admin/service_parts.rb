@@ -28,9 +28,9 @@ ActiveAdmin.register ServicePart do
     end
   }, input_html: { class: "select2" }
 
-  filter :part, as: :select, collection: -> {
-    Part.pluck(:name, :id)
-  }, input_html: { class: "select2" }
+  filter :part, as: :select, collection:
+    Part.pluck(:name, :id),
+    input_html: { class: "select2" }
   filter :created_at
   filter :updated_at
 
@@ -65,12 +65,12 @@ ActiveAdmin.register ServicePart do
 
   form do |f|
     f.inputs "Service Details" do
-    f.input :part, as: :select, collection: -> {
-      Part..pluck(:name, :id)
-    }, input_html: { class: "select2" }
-    f.input :record, as: :select, collection: -> {
-      Record..pluck(:name, :id)
-    }, input_html: { class: "select2" }
+    f.input :part, as: :select, collection:
+      Part..pluck(:name, :id),
+      input_html: { class: "select2" }
+    f.input :record, as: :select, collection:
+      Record..pluck(:name, :id),
+      input_html: { class: "select2" }
     f.input :quantity
     end
   f.actions

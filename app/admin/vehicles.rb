@@ -32,9 +32,9 @@ ActiveAdmin.register Vehicle do
 
   form do |f|
     f.inputs "Record Details" do
-      f.input :customer, as: :select, collection: -> {
-        Customer.pluck(:name, :id)
-      }, input_html: { class: "select2" }
+      f.input :customer, as: :select, collection:
+        Customer.pluck(:name, :id),
+        input_html: { class: "select2" }
       f.input :model
       f.input :number_plate
     end

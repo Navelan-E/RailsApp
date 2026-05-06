@@ -37,6 +37,8 @@ gem 'rspec-rails'
 
 gem 'shoulda-matchers'
 
+gem 'factory_bot_rails'
+
 gem 'simplecov', require: false
 # Use Active Model has_secure_password [https://guides.rubyonrails.org/active_model_basics.html#securepassword]
 # gem "bcrypt", "~> 3.1.7"

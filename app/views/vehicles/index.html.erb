@@ -1,10 +1,10 @@
 <h1>Vehicles</h1>
 <%= form_with url: vehicles_path, method: :get do %>
-  <%= text_field_tag :q, params[:q], placeholder: "Search records..." %>
+  <%= text_field_tag :search, params[:search], placeholder: "Search records..." %>
   <%= submit_tag "Search" %>
 <% end %>
 <% @vehicles.each do |vehicle| %>
-  <% if mechanic_signed_in? || (customer_signed_in? && current_customer == vehicle.customer) %>
+  <% if mechanic_signed_in? || admin_user_signed_in? || (customer_signed_in? && current_customer == vehicle.customer) %>
   <div class = "card">
     <p><%= vehicle.number_plate %></p>
     <p><%= vehicle.model %></p>

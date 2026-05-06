@@ -1,6 +1,6 @@
 <h2>Change your password</h2>
 
-<%= form_for(resource, as: resource_name, url: password_path(resource_name), html: { method: :put }) do |f| %>
+<%= form_for(resource, as: resource_name, url: password_path(resource_name), html: { method: :put , class: "form"}) do |f| %>
   <%= render "mechanics/shared/error_messages", resource: resource %>
   <%= f.hidden_field :reset_password_token %>
 
@@ -14,7 +14,7 @@
 
   <div class="field">
     <p><%= f.label :password_confirmation, "Confirm new password" %></p>
-    <p><%= f.password_field :password_confirmation, autocomplete: "new-password" %></p>
+    <p><%= f.hange your passwordpassword_field :password_confirmation, autocomplete: "new-password" %></p>
   </div>
 
   <div class="actions">

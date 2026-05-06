@@ -1,6 +1,6 @@
 class ReviewsController < ApplicationController
   before_action :any_signed_in?
-  before_action :authenticate_customer!, only: [:new, :create, :destroy]
+  before_action :authenticate_customer!, only: [:new, :create, :destroy, :update]
   def index
     @all_reviews = Review.all
   end
@@ -14,20 +14,14 @@ class ReviewsController < ApplicationController
     if @review.update(review_params)
       redirect_to reviews_path, notice: "Review updated successfully."
     else
-      flash.now[:alert] = "Failed to update review."
-      render :edit
+      redirect_to reviews_path, alert: "Failed to update review."
     end
-  end
-
-  def show
-    @review = Review.find(params[:id])
   end
 
   def new
     puts("hlo.. #{params[:record_id]}")
     @record = Record.find_by(id: params[:record_id])
-    puts(@record.inspect)
-    @review = @record.reviews.build
+    @review = Review.new()
   end
 
   def create

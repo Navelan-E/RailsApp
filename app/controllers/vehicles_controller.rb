@@ -3,8 +3,9 @@ class VehiclesController < ApplicationController
   before_action :authenticate_customer!, only: [:new, :create, :destroy]
   before_action :fetch_records, only: %i[show]
   def index
+    puts "paramsss #{params}"
     if params[:search]
-      @vehicles = Vehicle.where("name LIKE ?", "%#{params[:search]}%")
+      @vehicles = Vehicle.where("number_plate LIKE ?", "%#{params[:search]}%")
     else
       @vehicles = Vehicle.all
     end

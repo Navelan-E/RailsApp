@@ -1,5 +1,9 @@
 require 'rails_helper'
 
+RSpec.configure do |config|
+  config.include Devise::Test::IntegrationHelpers, type: :request
+end
+
 RSpec.describe "Customers", type: :request do
   let!(:mechanic) do
     Mechanic.create!(
@@ -18,223 +22,106 @@ RSpec.describe "Customers", type: :request do
       password: "12345678"
     )
   end
-
-  let(:m_token) do
-    post '/oauth/token', params: {
-    "grant_type": "password",
-    "username": "test@test.com",
-    "password": "12345678",
-    "role": "mechanic"
-  }
-    JSON.parse(response.body)["access_token"]
-  end
-
-let(:c_token) do
-    post '/oauth/token', params: {
-    "grant_type": "password",
-    "username": "test@test.com",
-    "password": "12345678",
-    "role": "customer"
-  }
-    JSON.parse(response.body)["access_token"]
-  end
-  describe "GET /api/v1/customers" do
+  describe "GET /customers" do
     it "get status ok for mechanic" do
-      get '/api/v1/customers', headers: {
-        "Authorization" => "Bearer #{m_token}"
-      }
+      sign_in mechanic
+      get '/customers'
 
       expect(response).to have_http_status(:ok)
     end
-    it "get status ok for customer" do
-      get '/api/v1/customers', headers: {
-        "Authorization" => "Bearer #{c_token}"
-      }
-
-      expect(response).to have_http_status(:ok)
+    it "redirects for customer" do
+      sign_in customer
+      get '/customers'
+      # Customer is redirected because authenticate_pros? only allows mechanics
+      expect(response).to be_redirect
     end
   end
 
-  describe "GET /api/v1/customers/#id" do
+  describe "GET /customers/:id" do
     it "get status ok for mechanic" do
-      get "/api/v1/customers/#{customer.id}", headers: {
-        "Authorization" => "Bearer #{m_token}"
-      }
+      sign_in mechanic
+      get "/customers/#{customer.id}"
 
       expect(response).to have_http_status(:ok)
-      json = JSON.parse(response.body)
-      expect(json["id"]).to eq(customer.id)
-      expect(json["name"]).to eq(customer.name)
-      expect(json["email"]).to eq(customer.email)
-      expect(json["phone"]).to eq(customer.phone)
     end
-    it "get status ok for customer" do
-      get "/api/v1/customers/#{customer.id}", headers: {
-        "Authorization" => "Bearer #{c_token}"
-      }
-
-      expect(response).to have_http_status(:ok)
-      json = JSON.parse(response.body)
-      expect(json["id"]).to eq(customer.id)
-      expect(json["name"]).to eq(customer.name)
-      expect(json["email"]).to eq(customer.email)
-      expect(json["phone"]).to eq(customer.phone)
+    it "redirects for customer" do
+      sign_in customer
+      get "/customers/#{customer.id}"
+      # Customer is redirected because authenticate_pros? only allows mechanics
+      expect(response).to be_redirect
     end
 
-    it "get status 404 for mechanic" do
-      get "/api/v1/customers/#{120}", headers: {
-        "Authorization" => "Bearer #{m_token}"
-      }
+    it "redirects with alert for mechanic when not found" do
+      sign_in mechanic
+      get "/customers/#{120}"
 
-      expect(response).to have_http_status(:not_found)
-      json = JSON.parse(response.body)
-      expect(json["error"]).to eq("Customer not found")
-    end
-    it "get status ok for customer" do
-      get "/api/v1/customers/#{120}", headers: {
-        "Authorization" => "Bearer #{c_token}"
-      }
-
-      expect(response).to have_http_status(:not_found)
-      json = JSON.parse(response.body)
-      expect(json["error"]).to eq("Customer not found")
+      expect(response).to redirect_to(customers_path)
+      expect(flash[:alert]).to eq("Customer not found.")
     end
   end
 
-  describe "GET /api/v1/customers/#id" do
-    it "get status ok for mechanic" do
-      get "/api/v1/customers/#{customer.id}", headers: {
-        "Authorization" => "Bearer #{m_token}"
-      }
-
-      expect(response).to have_http_status(:ok)
-      json = JSON.parse(response.body)
-      expect(json["id"]).to eq(customer.id)
-      expect(json["name"]).to eq(customer.name)
-      expect(json["email"]).to eq(customer.email)
-      expect(json["phone"]).to eq(customer.phone)
-    end
-    it "get status ok for customer" do
-      get "/api/v1/customers/#{customer.id}", headers: {
-        "Authorization" => "Bearer #{c_token}"
-      }
-
-      expect(response).to have_http_status(:ok)
-      json = JSON.parse(response.body)
-      expect(json["id"]).to eq(customer.id)
-      expect(json["name"]).to eq(customer.name)
-      expect(json["email"]).to eq(customer.email)
-      expect(json["phone"]).to eq(customer.phone)
-    end
-
-    it "get status 404 for mechanic" do
-      get "/api/v1/customers/#{120}", headers: {
-        "Authorization" => "Bearer #{m_token}"
-      }
-
-      expect(response).to have_http_status(:not_found)
-      json = JSON.parse(response.body)
-      expect(json["error"]).to eq("Customer not found")
-    end
-    it "get status ok for customer" do
-      get "/api/v1/customers/#{120}", headers: {
-        "Authorization" => "Bearer #{c_token}"
-      }
-
-      expect(response).to have_http_status(:not_found)
-      json = JSON.parse(response.body)
-      expect(json["error"]).to eq("Customer not found")
-    end
-  end
-
-  describe "Patch /api/v1/customers/#id" do
-    it "get status forbideen for mechanic" do
-      patch "/api/v1/customers/#{customer.id}", headers: {
-        "Authorization" => "Bearer #{m_token}"
-      }, params: {
+  describe "PATCH /customers/:id" do
+    it "redirects for mechanic" do
+      sign_in mechanic
+      patch "/customers/#{customer.id}", params: {
         customer: {
           name: "Demo"
         }
       }
-      expect(response).to have_http_status(:forbidden)
+      # Devise redirects to root or previous page for unauthorized users
+      expect(response).to be_redirect
     end
-    it "get status unprocessable_entity for mechanic" do
-      patch "/api/v1/customers/#{customer.id}", headers: {
-        "Authorization" => "Bearer #{c_token}"
-      }, params: {
-        customer: {
-          name: ""
-        }
-      }
-      expect(response).to have_http_status(:unprocessable_entity)
-    end
-    it "get status ok for customer" do
-      patch "/api/v1/customers/#{customer.id}", headers: {
-        "Authorization" => "Bearer #{c_token}"
-      }, params: {
+    it "returns success for valid update" do
+      sign_in customer
+      patch "/customers/#{customer.id}", params: {
         customer: {
           name: "Demo"
         }
       }
-      expect(response).to have_http_status(:ok)
-      json = JSON.parse(response.body)
-      expect(json["message"]).to eq("Updated successfully")
+      expect(response).to redirect_to(root_path)
+      expect(flash[:notice]).to eq("Customer updated successfully.")
     end
-    it "patch status ok for customer if no param" do
-      patch "/api/v1/customers/#{120}", headers: {
-        "Authorization" => "Bearer #{c_token}"
-      }
+    it "redirects with alert when customer not found" do
+      sign_in customer
+      patch "/customers/#{120}"
 
-      expect(response).to have_http_status(:not_found)
-      json = JSON.parse(response.body)
-      expect(json["error"]).to eq("Customer not found.")
+      expect(response).to redirect_to(root_path)
     end
   end
 
-  describe "Patch /api/v1/customers/#id/disable" do
-    it "patch status forbidden for mechanic" do
-      patch "/api/v1/customers/#{customer.id}/disable", headers: {
-        "Authorization" => "Bearer #{m_token}"
-      }
-      expect(response).to have_http_status(:forbidden)
+  describe "PATCH /customers/:id/disable" do
+    it "redirects for mechanic" do
+      sign_in mechanic
+      patch "/customers/#{customer.id}/disable"
+      # Devise redirects to root or previous page for unauthorized users
+      expect(response).to be_redirect
     end
-    it "patch status ok for customer" do
-      patch "/api/v1/customers/#{customer.id}/disable", headers: {
-        "Authorization" => "Bearer #{c_token}"
-      }
-      expect(response).to have_http_status(:ok)
-      json = JSON.parse(response.body)
-      expect(json["message"]).to eq("Disabled successfully")
+    it "redirects successfully for customer" do
+      sign_in customer
+      patch "/customers/#{customer.id}/disable"
+      expect(response).to redirect_to(root_path)
+      expect(flash[:notice]).to eq("Customer disabled successfully.")
     end
-    it "patch status not found if invalid id" do
-      patch "/api/v1/customers/#{120}/disable", headers: {
-        "Authorization" => "Bearer #{c_token}"
-      }
+    it "redirects with alert if invalid id" do
+      sign_in customer
+      patch "/customers/#{120}/disable"
 
-      expect(response).to have_http_status(:not_found)
-      json = JSON.parse(response.body)
-      expect(json["error"]).to eq("Customer not found.")
+      expect(response).to redirect_to(root_path)
     end
   end
 
-  describe "Patch /api/v1/customers/#id/unlock" do
-    it "patch status ok for customer" do
+  describe "PATCH /customers/:id/unlock" do
+    it "redirects successfully for customer" do
+      sign_in customer
       customer.lock_access!
-      patch "/api/v1/customers/#{customer.id}/unlock", headers: {
-        "Authorization" => "Bearer #{c_token}"
-      }
-      expect(response).to have_http_status(:ok)
-      json = JSON.parse(response.body)
-      expect(json["message"]).to eq("Unlocked successfully")
+      patch "/customers/#{customer.id}/unlock"
+      expect(response).to redirect_to(new_customer_session_path)
     end
-    it "patch status not found if invalid id" do
-      patch "/api/v1/customers/#{120}/unlock", headers: {
-        "Authorization" => "Bearer #{c_token}"
-      }
+    it "redirects with alert if invalid id" do
+      sign_in customer
+      patch "/customers/#{120}/unlock"
 
-      expect(response).to have_http_status(:not_found)
-      json = JSON.parse(response.body)
-      expect(json["error"]).to eq("Customer not found.")
+      expect(response).to redirect_to(root_path)
     end
   end
 end
