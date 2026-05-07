@@ -4,11 +4,18 @@ class MechanicsController < ApplicationController
     before_action :authenticate_admin_user!, only: [:destroy]
 
     def index
-        if params[:q].present?
-            @mechanics = Mechanic.where("name ILIKE ?", "%#{params[:q]}%")
-        else
-            @mechanics = Mechanic.all
-        end
+        token = ::InternalApi::OauthTokenService.token
+
+        response = ::InternalApi::MechanicsService.index(
+        token,
+        params[:q]
+        )
+        # if params[:q].present?
+        #     @mechanics = Mechanic.where("name ILIKE ?", "%#{params[:q]}%")
+        # else
+        #     @mechanics = Mechanic.all
+        # end
+        @mechanics = Array(response).map { |mechanic_data| Mechanic.new(mechanic_data) }   
     end
 
     def show

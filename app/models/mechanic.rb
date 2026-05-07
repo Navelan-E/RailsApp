@@ -19,4 +19,8 @@ class Mechanic < ApplicationRecord
     def self.ransackable_attributes(_auth_object = nil)
     [ "email", "experience", "id", "name" ]
     end
+
+    def self.ransackable_associations(auth_object = nil)
+    ["records", "reviews"]
+    end
 end

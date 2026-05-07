@@ -11,7 +11,13 @@ ActiveAdmin.register AdminUser do
     actions
   end
 
-  filter :email
+  filter :email, 
+        as: :select, 
+        input_html: { multiple: true , style: "width: 20%"}, 
+        collection: -> {
+          AdminUser.pluck(:email, :id)
+        },
+        input_html: { class: "select2" }
   filter :current_sign_in_at
   filter :sign_in_count
   filter :created_at

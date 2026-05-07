@@ -1,6 +1,7 @@
 class Api::V1::MechanicsController < Api::V1::BaseController
-    before_action -> { doorkeeper_authorize! :"mechanic:read" }
+    before_action -> { doorkeeper_authorize! :"mechanic:read" }, only: [:index]
     before_action -> { doorkeeper_authorize! :"mechanic:write" }, except: [:index]
+
     def index
         if params[:q].present?
             mechanics = Mechanic.where("name ILIKE ?", "%#{params[:q]}%")

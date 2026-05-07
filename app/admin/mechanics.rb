@@ -32,9 +32,20 @@ ActiveAdmin.register Mechanic do
   #   permitted << :other if params[:action] == 'create' && current_user.admin?
   #   permitted
   # end
-  filter :name
-  filter :experience
-  filter :email
+  filter :name,
+        as: :select, 
+        input_html: { multiple: true , style: "width: 20%"}, 
+        collection: -> {
+          Mechanic.pluck(:name, :id)
+        },
+        input_html: { class: "select2" }
+  filter :email,
+        as: :select, 
+        input_html: { multiple: true , style: "width: 20%"}, 
+        collection: -> {
+          Mechanic.pluck(:email, :id)
+        },
+        input_html: { class: "select2" }
   filter :remember_created_at
 
   index do

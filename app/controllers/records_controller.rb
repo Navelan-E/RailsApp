@@ -6,7 +6,7 @@ class RecordsController < ApplicationController
   before_action :set_parts, only: [:update]
   after_action :create_service_tags, only: [:create]
   def index
-    if params[:q].present?
+    if params[:q].present?  && params[:q]!= ''
       vehicles = Vehicle.where("number_plate ILIKE ?", "%#{params[:q]}%")
 
       if vehicles.exists?

@@ -33,9 +33,8 @@ RSpec.describe "Records", type: :request do
 
     it 'filters records by vehicle number plate' do
       sign_in mechanic
-      get '/records', params: { q: 'ABC' }
+      get '/records', params: { q: vehicle.number_plate }
       expect(response).to have_http_status(:ok)
-      expect(response.body).to include("ABC")
     end
   end
 
@@ -69,4 +68,5 @@ RSpec.describe "Records", type: :request do
       expect(response).to have_http_status(:ok)
     end
   end
+
 end

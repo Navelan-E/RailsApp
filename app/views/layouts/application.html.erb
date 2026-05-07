@@ -42,6 +42,21 @@
      data-alert="<%= flash[:alert] %>">
   </div>
 
+  <script>
+    document.addEventListener('DOMContentLoaded', function() {
+      const flashDiv = document.getElementById('flash');
+      const notice = flashDiv.dataset.notice;
+      const alert = flashDiv.dataset.alert;
+      
+      if (notice && notice.trim() !== '') {
+        toastr.success(notice);
+      }
+      if (alert && alert.trim() !== '') {
+        toastr.error(alert);
+      }
+    });
+  </script>
+
 </body>
 
 <style>
