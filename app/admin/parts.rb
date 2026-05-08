@@ -40,4 +40,19 @@ ActiveAdmin.register Part do
   def admin_parts_params
     params.permit(ids: [])
   end
+
+  filter :records,
+        as: :select,
+        input_html: { multiple: true , style: "width: 20%"}, 
+        collection: -> {
+          Record.pluck(:created_at, :id)
+        },
+        input_html: { class: "select2" }
+  filter :name,
+        as: :select,
+        input_html: { multiple: true , style: "width: 20%"}, 
+        collection: -> {
+          Part.pluck(:name, :id)
+        },
+        input_html: { class: "select2" }
 end

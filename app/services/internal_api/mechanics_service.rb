@@ -11,7 +11,7 @@ class InternalApi::MechanicsService
     []
   end
 
-    def self.connection(token)
+  def self.connection(token)
     Faraday.new(url: BASE_URL) do |f|
       f.headers["Authorization"] = "Bearer #{token}"
       f.headers["Content-Type"] = "application/json"

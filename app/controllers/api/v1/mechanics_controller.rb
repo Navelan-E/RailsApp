@@ -14,7 +14,7 @@ class Api::V1::MechanicsController < Api::V1::BaseController
     def update
         mechanic = Mechanic.find_by(id: params[:id])
         if mechanic
-            if mechanic&.update(params[:mechanic].permit(:name, :email, :experience))
+            if mechanic.update(params[:mechanic].permit(:name, :email, :experience))
                 render json: {
                     message: "Updated successfully",
                     mechanic: mechanic

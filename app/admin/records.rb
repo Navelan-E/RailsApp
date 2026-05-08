@@ -42,10 +42,8 @@ ActiveAdmin.register Record do
     Mechanic.pluck(:name, :id)
   }, input_html: { class: "select2" }
   filter :status, as: :select, collection: Record.statuses.keys, input_html: { class: "select2" }
-  filter :total_cost
   filter :created_at
   filter :updated_at
-  filter :internal_notes
 
   index do
     selectable_column

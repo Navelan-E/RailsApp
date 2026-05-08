@@ -16,7 +16,7 @@ ActiveAdmin.register Review do
   #   permitted
   # end
 
-  filter :reviewable_type, as: :select, collection: ['Record', 'Mechanic', 'Vehicle']
+  filter :reviewable_type, as: :select, collection: ['Record', 'Mechanic', 'Vehicle'], input_html: { class: "select2" }
   filter :customer, as: :select, collection: proc { Customer.all.pluck(:name, :id) }, input_html: { class: "select2" }
   filter :created_at
   filter :updated_at

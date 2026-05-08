@@ -1,6 +1,6 @@
 ActiveAdmin.register ServicePart do
   scope :all, default: true
-  
+
   scope :used_parts do |scope|
     scope.used_parts
   end
