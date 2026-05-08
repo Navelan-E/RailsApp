@@ -39,202 +39,267 @@ let(:c_token) do
     JSON.parse(response.body)["access_token"]
   end
   describe "GET /api/v1/customers" do
-    it "get status ok for mechanic" do
+    before do
       get '/api/v1/customers', headers: {
-        "Authorization" => "Bearer #{m_token}"
-      }
-
-      expect(response).to have_http_status(:ok)
+          "Authorization" => "Bearer #{token}"
+        }
     end
-    it "get status ok for customer" do
-      get '/api/v1/customers', headers: {
-        "Authorization" => "Bearer #{c_token}"
-      }
+    context "when authenticated as a mechanic" do
+      let(:token) { m_token }
+      it "get status ok" do
+        expect(response).to have_http_status(:ok)
+      end
+    end
 
-      expect(response).to have_http_status(:ok)
+    context "when authenticated as a customer" do
+      let(:token) { c_token }
+      it "get status ok" do
+        expect(response).to have_http_status(:ok)
+      end
     end
   end
 
   describe "GET /api/v1/customers/#id" do
-    it "get status ok for mechanic" do
-      get "/api/v1/customers/#{customer.id}", headers: {
-        "Authorization" => "Bearer #{m_token}"
-      }
-
-      expect(response).to have_http_status(:ok)
-      json = JSON.parse(response.body)
-      expect(json["id"]).to eq(customer.id)
-      expect(json["name"]).to eq(customer.name)
-      expect(json["email"]).to eq(customer.email)
-      expect(json["phone"]).to eq(customer.phone)
-    end
-    it "get status ok for customer" do
-      get "/api/v1/customers/#{customer.id}", headers: {
-        "Authorization" => "Bearer #{c_token}"
-      }
-
-      expect(response).to have_http_status(:ok)
-      json = JSON.parse(response.body)
-      expect(json["id"]).to eq(customer.id)
-      expect(json["name"]).to eq(customer.name)
-      expect(json["email"]).to eq(customer.email)
-      expect(json["phone"]).to eq(customer.phone)
+    before do
+      get "/api/v1/customers/#{id}", headers: {
+          "Authorization" => "Bearer #{token}"
+        }
     end
 
-    it "get status 404 for mechanic" do
-      get "/api/v1/customers/#{120}", headers: {
-        "Authorization" => "Bearer #{m_token}"
-      }
-
-      expect(response).to have_http_status(:not_found)
-      json = JSON.parse(response.body)
-      expect(json["error"]).to eq("Customer not found")
+    context "when authenticated as a mechanic" do
+      let(:token) { m_token }
+      let(:id) { customer.id }
+      it "get status ok for mechanic", :aggregate_failures do
+        expect(response).to have_http_status(:ok)
+        json = JSON.parse(response.body)
+        expect(json["id"]).to eq(customer.id)
+        expect(json["name"]).to eq(customer.name)
+        expect(json["email"]).to eq(customer.email)
+        expect(json["phone"]).to eq(customer.phone)
+      end
     end
-    it "get status ok for customer" do
-      get "/api/v1/customers/#{120}", headers: {
-        "Authorization" => "Bearer #{c_token}"
-      }
+    context "when authenticated as a customer" do
+      let(:token) { c_token }
+      let(:id) { customer.id }
+      it "get status ok for customer", :aggregate_failures do
+        expect(response).to have_http_status(:ok)
+        json = JSON.parse(response.body)
+        expect(json["id"]).to eq(customer.id)
+        expect(json["name"]).to eq(customer.name)
+        expect(json["email"]).to eq(customer.email)
+        expect(json["phone"]).to eq(customer.phone)
+      end
+    end
 
-      expect(response).to have_http_status(:not_found)
-      json = JSON.parse(response.body)
-      expect(json["error"]).to eq("Customer not found")
+    context "when authenticated as a mechanic" do
+      let(:token) { m_token }
+      let(:id) { 120 }
+      it "get status 404" do
+        get "/api/v1/customers/#{120}", headers: {
+          "Authorization" => "Bearer #{m_token}"
+        }
+
+        expect(response).to have_http_status(:not_found)
+        json = JSON.parse(response.body)
+        expect(json["error"]).to eq("Customer not found")
+      end
+    end
+
+    context "when authenticated as a customer" do
+      let(:token) { c_token }
+      let(:id) { 120 }
+      it "get status 404" do
+        get "/api/v1/customers/#{120}", headers: {
+          "Authorization" => "Bearer #{c_token}"
+        }
+
+        expect(response).to have_http_status(:not_found)
+        json = JSON.parse(response.body)
+        expect(json["error"]).to eq("Customer not found")
+      end
     end
   end
 
   describe "GET /api/v1/customers/#id" do
-    it "get status ok for mechanic" do
-      get "/api/v1/customers/#{customer.id}", headers: {
-        "Authorization" => "Bearer #{m_token}"
-      }
-
-      expect(response).to have_http_status(:ok)
-      json = JSON.parse(response.body)
-      expect(json["id"]).to eq(customer.id)
-      expect(json["name"]).to eq(customer.name)
-      expect(json["email"]).to eq(customer.email)
-      expect(json["phone"]).to eq(customer.phone)
+    before do
+      get "/api/v1/customers/#{id}", headers: {
+          "Authorization" => "Bearer #{token}"
+        }
     end
-    it "get status ok for customer" do
-      get "/api/v1/customers/#{customer.id}", headers: {
-        "Authorization" => "Bearer #{c_token}"
-      }
-
-      expect(response).to have_http_status(:ok)
-      json = JSON.parse(response.body)
-      expect(json["id"]).to eq(customer.id)
-      expect(json["name"]).to eq(customer.name)
-      expect(json["email"]).to eq(customer.email)
-      expect(json["phone"]).to eq(customer.phone)
+    context "Authendicate as mechanic" do
+      let(:token) { m_token }
+      let(:id) { customer.id }
+      it "get status ok", :aggregate_failures do
+        expect(response).to have_http_status(:ok)
+        json = JSON.parse(response.body)
+        expect(json["id"]).to eq(customer.id)
+        expect(json["name"]).to eq(customer.name)
+        expect(json["email"]).to eq(customer.email)
+        expect(json["phone"]).to eq(customer.phone)
+      end
     end
 
-    it "get status 404 for mechanic" do
-      get "/api/v1/customers/#{120}", headers: {
-        "Authorization" => "Bearer #{m_token}"
-      }
-
-      expect(response).to have_http_status(:not_found)
-      json = JSON.parse(response.body)
-      expect(json["error"]).to eq("Customer not found")
+    context "Authendicate as customer" do
+      let(:token) { c_token }
+      let(:id) { customer.id }
+      it "get status ok", :aggregate_failures do
+        expect(response).to have_http_status(:ok)
+        json = JSON.parse(response.body)
+        expect(json["id"]).to eq(customer.id)
+        expect(json["name"]).to eq(customer.name)
+        expect(json["email"]).to eq(customer.email)
+        expect(json["phone"]).to eq(customer.phone)
+      end
     end
-    it "get status ok for customer" do
-      get "/api/v1/customers/#{120}", headers: {
-        "Authorization" => "Bearer #{c_token}"
-      }
 
-      expect(response).to have_http_status(:not_found)
-      json = JSON.parse(response.body)
-      expect(json["error"]).to eq("Customer not found")
+    context "Authendicate as mechanic", :aggregate_failures do
+      let(:token) { m_token }
+      let(:id) { 120 }
+      it "get status 404" do
+        expect(response).to have_http_status(:not_found)
+        json = JSON.parse(response.body)
+        expect(json["error"]).to eq("Customer not found")
+      end
+    end
+
+    context "Authendicate as customer" do
+      let(:token) { c_token }
+      let(:id) { 120 }
+      it "get status 404", :aggregate_failures do
+        expect(response).to have_http_status(:not_found)
+        json = JSON.parse(response.body)
+        expect(json["error"]).to eq("Customer not found")
+      end
     end
   end
 
   describe "Patch /api/v1/customers/#id" do
-    it "get status forbideen for mechanic" do
-      patch "/api/v1/customers/#{customer.id}", headers: {
-        "Authorization" => "Bearer #{m_token}"
-      }, params: {
-        customer: {
-          name: "Demo"
-        }
-      }
-      expect(response).to have_http_status(:forbidden)
+    before do
+      patch "/api/v1/customers/#{id}", headers: {
+        "Authorization" => "Bearer #{token}"
+      }, params: params
     end
-    it "get status unprocessable_entity for mechanic" do
-      patch "/api/v1/customers/#{customer.id}", headers: {
-        "Authorization" => "Bearer #{c_token}"
-      }, params: {
-        customer: {
-          name: ""
-        }
-      }
-      expect(response).to have_http_status(:unprocessable_entity)
-    end
-    it "get status ok for customer" do
-      patch "/api/v1/customers/#{customer.id}", headers: {
-        "Authorization" => "Bearer #{c_token}"
-      }, params: {
-        customer: {
-          name: "Demo"
-        }
-      }
-      expect(response).to have_http_status(:ok)
-      json = JSON.parse(response.body)
-      expect(json["message"]).to eq("Updated successfully")
-    end
-    it "patch status ok for customer if no param" do
-      patch "/api/v1/customers/#{120}", headers: {
-        "Authorization" => "Bearer #{c_token}"
-      }
 
-      expect(response).to have_http_status(:not_found)
-      json = JSON.parse(response.body)
-      expect(json["error"]).to eq("Customer not found.")
+    context "when authenticated as a mechanic" do
+      let(:token) { m_token }
+      let(:params) {{
+          customer: {
+            name: "Demo"
+          }
+        }}
+      let(:id) { customer.id }
+      it "get status forbideen" do
+        patch "/api/v1/customers/#{customer.id}", headers: {
+          "Authorization" => "Bearer #{m_token}"
+        }, params: {
+          customer: {
+            name: "Demo"
+          }
+        }
+        expect(response).to have_http_status(:forbidden)
+      end
+    end
+
+    context "when authenticated as a customer" do
+      let(:token) { c_token }
+      let(:params) {{
+          customer: {
+            name: ""
+          }
+        }}
+      let(:id) { customer.id }
+      it "get status unprocessable_entity" do
+        expect(response).to have_http_status(:unprocessable_entity)
+      end
+    end
+
+    context "when authenticated as a customer" do
+      let(:token) { c_token }
+      let(:params) {{
+          customer: {
+            name: "Demo"
+          }
+        }}
+      let(:id) { customer.id }
+      it "get status ok", :aggregate_failures do
+        expect(response).to have_http_status(:ok)
+        json = JSON.parse(response.body)
+        expect(json["message"]).to eq("Updated successfully")
+      end
+    end
+
+    context "when authenticated as a customer" do
+      let(:token) { c_token }
+      let(:params) {{
+          customer: {
+            name: "Demo"
+          }
+        }}
+      let(:id) { 120 }
+      it "patch status ok for customer if no param", :aggregate_failures do
+        expect(response).to have_http_status(:not_found)
+        json = JSON.parse(response.body)
+        expect(json["error"]).to eq("Customer not found.")
+      end
     end
   end
 
   describe "Patch /api/v1/customers/#id/disable" do
-    it "patch status forbidden for mechanic" do
-      patch "/api/v1/customers/#{customer.id}/disable", headers: {
-        "Authorization" => "Bearer #{m_token}"
-      }
-      expect(response).to have_http_status(:forbidden)
+    before do
+      patch "/api/v1/customers/#{id}/disable", headers: {
+          "Authorization" => "Bearer #{token}"
+        }
     end
-    it "patch status ok for customer" do
-      patch "/api/v1/customers/#{customer.id}/disable", headers: {
-        "Authorization" => "Bearer #{c_token}"
-      }
-      expect(response).to have_http_status(:ok)
-      json = JSON.parse(response.body)
-      expect(json["message"]).to eq("Disabled successfully")
+    context "when authenticated as a mechanic" do
+      let(:token) { m_token }
+      let(:id) { customer.id }
+      it "patch status forbidden for mechanic" do
+        expect(response).to have_http_status(:forbidden)
+      end
     end
-    it "patch status not found if invalid id" do
-      patch "/api/v1/customers/#{120}/disable", headers: {
-        "Authorization" => "Bearer #{c_token}"
-      }
+    context "when authenticated as a customer" do
+      let(:token) { c_token }
+      let(:id) { customer.id }
+      it "patch status ok" do
+        expect(response).to have_http_status(:ok)
+        json = JSON.parse(response.body)
+        expect(json["message"]).to eq("Disabled successfully")
+      end
+    end
 
-      expect(response).to have_http_status(:not_found)
-      json = JSON.parse(response.body)
-      expect(json["error"]).to eq("Customer not found.")
+    context "when authenticated as a customer" do
+      let(:token) { c_token }
+      let(:id) { 120}
+      it "patch status not found if invalid id" do
+        expect(response).to have_http_status(:not_found)
+        json = JSON.parse(response.body)
+        expect(json["error"]).to eq("Customer not found.")
+      end
     end
   end
 
   describe "Patch /api/v1/customers/#id/unlock" do
-    it "patch status ok for customer" do
+    before do
       customer.lock_access!
-      patch "/api/v1/customers/#{customer.id}/unlock", headers: {
-        "Authorization" => "Bearer #{c_token}"
-      }
-      expect(response).to have_http_status(:ok)
-      json = JSON.parse(response.body)
-      expect(json["message"]).to eq("Unlocked successfully")
+        patch "/api/v1/customers/#{id}/unlock", headers: {
+          "Authorization" => "Bearer #{c_token}"
+        }
     end
-    it "patch status not found if invalid id" do
-      patch "/api/v1/customers/#{120}/unlock", headers: {
-        "Authorization" => "Bearer #{c_token}"
-      }
-
-      expect(response).to have_http_status(:not_found)
-      json = JSON.parse(response.body)
-      expect(json["error"]).to eq("Customer not found.")
+    context "Authendicate as a customer" do
+      let(:id) {customer.id}
+      it "patch status ok for customer" do
+        expect(response).to have_http_status(:ok)
+        json = JSON.parse(response.body)
+        expect(json["message"]).to eq("Unlocked successfully")
+      end
+    end
+    context "Authendicate as a customer" do
+      let(:id) { 120 }
+      it "patch status not found if invalid id" do
+        expect(response).to have_http_status(:not_found)
+        json = JSON.parse(response.body)
+        expect(json["error"]).to eq("Customer not found.")
+      end
     end
   end
 end

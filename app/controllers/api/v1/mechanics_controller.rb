@@ -1,6 +1,6 @@
 class Api::V1::MechanicsController < Api::V1::BaseController
-    before_action -> { doorkeeper_authorize! :"mechanic:read" }, only: [:index]
-    before_action -> { doorkeeper_authorize! :"mechanic:write" }, except: [:index]
+    before_action -> { doorkeeper_authorize! :"mechanic:read" }, only: [ :index ]
+    before_action -> { doorkeeper_authorize! :"mechanic:write" }, except: [ :index ]
 
     def index
         if params[:q].present?
@@ -20,7 +20,7 @@ class Api::V1::MechanicsController < Api::V1::BaseController
                     mechanic: mechanic
                 }, status: :ok
             else
-                render json:{
+                render json: {
                     error: Array(mechanic.errors&.full_messages).join(", ")
                 }, status: :unprocessable_entity
             end
@@ -33,15 +33,15 @@ class Api::V1::MechanicsController < Api::V1::BaseController
 
     def create
         temp = mechanic_params
-        temp[:password] = '123456'
+        temp[:password] = "123456"
         mechanic = Mechanic.new(temp)
         if mechanic.save
-            render json:{
+            render json: {
               message: "Created Successfully",
               mechanic: mechanic
             }, status: :created
         else
-            render json:{
+            render json: {
               error: mechanic.errors.full_messages.join(", ")
             }, status: :unprocessable_entity
         end
@@ -77,8 +77,9 @@ class Api::V1::MechanicsController < Api::V1::BaseController
 
     def disable
       mechanic = Mechanic.find_by(id: params[:id])
+
       if mechanic
-        mechanic.lock_access!
+          mechanic.lock_access!
         render json: { message: "Disabled successfully"
       }, status: :ok
       else
@@ -86,6 +87,7 @@ class Api::V1::MechanicsController < Api::V1::BaseController
         }, status: :not_found
       end
     end
+
 
     def unlock
     mechanic = Mechanic.find_by(id: params[:id])

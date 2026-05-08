@@ -26,11 +26,12 @@ RSpec.describe "Parts", type: :request do
   end
 
   describe "GET /api/v1/parts" do
-    it "returns all parts with valid token" do
+    before do
       get '/api/v1/parts', headers: {
         "Authorization" => "Bearer #{token}"
       }
-
+    end
+    it "returns all parts with valid token", :aggregate_failures do
       expect(response).to have_http_status(:ok)
       json = JSON.parse(response.body)
       expect(json.size).to be >= 1
@@ -41,85 +42,89 @@ RSpec.describe "Parts", type: :request do
   end
 
   describe "POST /api/v1/parts" do
-    it "creates a new part successfully" do
+    before do
       post '/api/v1/parts', headers: {
         "Authorization" => "Bearer #{token}"
-      }, params: {
-        part: {
-          name: "Air Filter",
-          price: 15.0,
-          stock: 30
-        }
-      }
-
-      expect(response).to have_http_status(:created)
-      json = JSON.parse(response.body)
-      expect(json["message"]).to eq("Created Successfully")
-      expect(json["part"]["name"]).to eq("Air Filter")
-      expect(json["part"]["price"].to_f).to eq(15.0)
-      expect(json["part"]["stock"]).to eq(30)
+      }, params: params
     end
-
-    it "fails to create part with invalid params" do
-      post '/api/v1/parts', headers: {
-        "Authorization" => "Bearer #{token}"
-      }, params: {
+    context "Authendicate as Mechanic" do
+      let(:params) {{
         part: {
-          name: "",
-          price: "invalid",
-          stock: -5
+        name: "Air Filter",
+        price: 15.0,
+        stock: 30
         }
-      }
-
-      expect(response).to have_http_status(:unprocessable_entity)
-      json = JSON.parse(response.body)
-      expect(json["error"]).to eq("Failed to create part")
+      }}
+      it "creates a new part successfully", :aggregate_failures do
+        expect(response).to have_http_status(:created)
+        json = JSON.parse(response.body)
+        expect(json["message"]).to eq("Created Successfully")
+        expect(json["part"]["name"]).to eq("Air Filter")
+        expect(json["part"]["price"].to_f).to eq(15.0)
+        expect(json["part"]["stock"]).to eq(30)
+      end
+    end
+    context "Authendicate as Mechanic" do
+      let(:params) {{
+        part: {
+        name: "",
+        price: "invalid",
+        stock: -5
+        }
+      }}
+      it "fails to create part with invalid params", :aggregate_failures do
+        expect(response).to have_http_status(:unprocessable_entity)
+        json = JSON.parse(response.body)
+        expect(json["error"]).to eq("Failed to create part")
+      end
     end
   end
 
   describe "PATCH /api/v1/parts/:id" do
-    it "updates part stock successfully" do
-      patch "/api/v1/parts/#{part.id}", headers: {
+    before do
+      patch "/api/v1/parts/#{id}", headers: {
         "Authorization" => "Bearer #{token}"
-      }, params: {
+      }, params: params
+    end
+    context "Authendicate as mechanic" do
+      let(:id) { part.id }
+      let(:params) {{
         part: {
           stock: 100
         }
-      }
-
-      expect(response).to have_http_status(:ok)
-      json = JSON.parse(response.body)
-      expect(json["message"]).to eq("Updated Successfully")
-      expect(json["part"]["stock"]).to eq(100)
+      }}
+      it "updates part stock successfully" do
+        expect(response).to have_http_status(:ok)
+        json = JSON.parse(response.body)
+        expect(json["message"]).to eq("Updated Successfully")
+        expect(json["part"]["stock"]).to eq(100)
+      end
     end
-
-    it "returns 404 for non-existent part" do
-      patch "/api/v1/parts/9999", headers: {
-        "Authorization" => "Bearer #{token}"
-      }, params: {
+    context "Authendicate as mechanic" do
+      let(:id) { 120 }
+      let(:params) {{
         part: {
           stock: 100
         }
-      }
-
-      expect(response).to have_http_status(:not_found)
-      json = JSON.parse(response.body)
-      expect(json["error"]).to eq("Part Not found")
+      }}
+      it "returns 404 for non-existent part" do
+        expect(response).to have_http_status(:not_found)
+        json = JSON.parse(response.body)
+        expect(json["error"]).to eq("Part Not found")
+      end
     end
-
-    it "fails to update part with invalid stock" do
-      allow_any_instance_of(Part).to receive(:update).and_return(false)
-      patch "/api/v1/parts/#{part.id}", headers: {
-        "Authorization" => "Bearer #{token}"
-      }, params: {
+    context "Authendicate as mechanic" do
+      let(:id) { part.id }
+      let(:params) {{
         part: {
-          stock: -1
+          stock: "one"
         }
-      }
-
-      expect(response).to have_http_status(:unprocessable_entity)
-      json = JSON.parse(response.body)
-      expect(json["error"]).to eq("Failed to update part.")
+      }}
+      it "fails to update part with invalid stock" do
+        expect(response).to have_http_status(:unprocessable_entity)
+        json = JSON.parse(response.body)
+        expect(json["error"]).to eq("Failed to update part.")
+      end
     end
   end
 end

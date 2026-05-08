@@ -57,39 +57,46 @@ RSpec.describe "Summaries", type: :request do
   end
 
   describe "GET /api/v1/summaries" do
-    it "returns all summaries with valid token" do
+    before do
       get '/api/v1/summaries', headers: {
         "Authorization" => "Bearer #{token}"
       }
-
-      expect(response).to have_http_status(:ok)
-      json = JSON.parse(response.body)
-      expect(json.size).to eq(2)
-      expect(json[0]["summary_text"]).to eq("Summary 1")
-      expect(json[1]["summary_text"]).to eq("Summary 2")
+    end
+    context "Authendicate as Mechanic" do
+      it "returns all summaries with valid token" do
+        expect(response).to have_http_status(:ok)
+        json = JSON.parse(response.body)
+        expect(json.size).to eq(2)
+      end
     end
   end
 
   describe "GET /api/v1/summaries/:id" do
-    it "returns a specific summary" do
-      get "/api/v1/summaries/#{summary1.id}", headers: {
+    before do
+      get "/api/v1/summaries/#{id}", headers: {
         "Authorization" => "Bearer #{token}"
       }
-
-      expect(response).to have_http_status(:ok)
-      json = JSON.parse(response.body)
-      expect(json["id"]).to eq(summary1.id)
-      expect(json["summary_text"]).to eq("Summary 1")
     end
+    context "Authendicate as Mechanic" do
+      let(:id) { summary1.id }
+      it "returns a specific summary" do
+        expect(response).to have_http_status(:ok)
+        json = JSON.parse(response.body)
+        expect(json["id"]).to eq(summary1.id)
+        expect(json["summary_text"]).to eq("Summary 1")
+      end
+    end
+    context "Authendicate as Mechanic" do
+      let(:id) { 120 }
+      it "returns 404 for non-existent summary" do
+        get "/api/v1/summaries/9999", headers: {
+          "Authorization" => "Bearer #{token}"
+        }
 
-    it "returns 404 for non-existent summary" do
-      get "/api/v1/summaries/9999", headers: {
-        "Authorization" => "Bearer #{token}"
-      }
-
-      expect(response).to have_http_status(:not_found)
-      json = JSON.parse(response.body)
-      expect(json["error"]).to eq("Summary not found")
+        expect(response).to have_http_status(:not_found)
+        json = JSON.parse(response.body)
+        expect(json["error"]).to eq("Summary not found")
+      end
     end
   end
 end

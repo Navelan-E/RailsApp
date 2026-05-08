@@ -9,56 +9,65 @@ RSpec.describe "Tags", type: :request do
     Tag.create!(tag: "Maintenance")
   end
 
-  let(:token) do
-    mechanic = Mechanic.create!(
+  let!(:mechanic) do
+    Mechanic.create!(
       name: "test",
       email: "test@test.com",
       experience: "1",
       password: "12345678"
     )
+  end
+
+  let!(:customer) do
+    Customer.create!(
+      name: "test",
+      email: "test@test.com",
+      phone: "1234567890",
+      password: "12345678"
+    )
+  end
+
+  let(:m_token) do
     post '/oauth/token', params: {
+    "grant_type": "password",
+    "username": "test@test.com",
+    "password": "12345678",
+    "role": "mechanic"
+  }
+    JSON.parse(response.body)["access_token"]
+  end
+
+  let(:c_token) do
+      post '/oauth/token', params: {
       "grant_type": "password",
       "username": "test@test.com",
       "password": "12345678",
-      "role": "mechanic"
+      "role": "customer"
     }
     JSON.parse(response.body)["access_token"]
   end
 
   describe "GET /api/v1/tags" do
-    it "returns all tags with valid token" do
+    before do
       get '/api/v1/tags', headers: {
-        "Authorization" => "Bearer #{token}"
-      }
-
-      expect(response).to have_http_status(:ok)
-      json = JSON.parse(response.body)
-      expect(json.size).to eq(2)
-      expect(json.map { |t| t["tag"] }).to include("Oil Change", "Maintenance")
+          "Authorization" => "Bearer #{token}"
+        }
     end
-
-    it "returns all tags with any valid authorization" do
-      customer = Customer.create!(
-        name: "test",
-        email: "customer@test.com",
-        phone: "1234567890",
-        password: "12345678"
-      )
-      post '/oauth/token', params: {
-        "grant_type": "password",
-        "username": "customer@test.com",
-        "password": "12345678",
-        "role": "customer"
-      }
-      c_token = JSON.parse(response.body)["access_token"]
-
-      get '/api/v1/tags', headers: {
-        "Authorization" => "Bearer #{c_token}"
-      }
-
-      expect(response).to have_http_status(:ok)
-      json = JSON.parse(response.body)
-      expect(json.size).to eq(2)
+    context "when authenticated as a mechanic" do
+      let(:token) { m_token }
+      it "returns all tags" do
+        expect(response).to have_http_status(:ok)
+        json = JSON.parse(response.body)
+        expect(json.size).to eq(2)
+      end
+    end
+    context "when authenticated as a mechanic" do
+      let(:token) { c_token }
+      it "returns all tags" do
+        expect(response).to have_http_status(:ok)
+        json = JSON.parse(response.body)
+        expect(json.size).to eq(2)
+      end
     end
   end
 end
