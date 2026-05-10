@@ -23,7 +23,7 @@ ActiveAdmin.register Mechanic do
   #
   # Uncomment all parameters which should be permitted for assignment
   #
-  permit_params :name, :experience, :email, :reset_password_sent_at, :remember_created_at, :failed_attempts, :locked_at, :unlock_token
+  permit_params :name, :experience, :email, :reset_password_sent_at, :remember_created_at, :failed_attempts, :locked_at, :unlock_token, :password, :password_confirmation
   #
   # or
   #
@@ -82,6 +82,8 @@ ActiveAdmin.register Mechanic do
     f.input :name, as: :string
     f.input :experience, as: :string
     f.input :unlock_token
+    f.input :email, as: :string
+    f.input :password, as: :string
     end
   f.actions
   end

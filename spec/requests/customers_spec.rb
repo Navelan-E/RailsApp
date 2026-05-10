@@ -7,121 +7,181 @@ end
 RSpec.describe "Customers", type: :request do
   let!(:mechanic) do
     Mechanic.create!(
-      name: "test",
-      email: "test@test.com",
-      experience: "1",
-      password: "12345678"
+      name: 'test',
+      email: 'test@test.com',
+      experience: '1',
+      password: '12345678'
     )
   end
 
   let!(:customer) do
     Customer.create!(
-      name: "test",
-      email: "test@test.com",
-      phone: "1234567890",
-      password: "12345678"
+      name: 'test',
+      email: 'test@test.com',
+      phone: '1234567890',
+      password: '12345678'
     )
   end
-  describe "GET /customers" do
-    it "get status ok for mechanic" do
-      sign_in mechanic
-      get '/customers'
 
-      expect(response).to have_http_status(:ok)
-    end
-    it "redirects for customer" do
-      sign_in customer
-      get '/customers'
-      # Customer is redirected because authenticate_pros? only allows mechanics
-      expect(response).to be_redirect
-    end
-  end
+  describe 'GET /customers' do
+    context 'when mechanic' do
+      before do
+        sign_in mechanic
+        get '/customers'
+      end
 
-  describe "GET /customers/:id" do
-    it "get status ok for mechanic" do
-      sign_in mechanic
-      get "/customers/#{customer.id}"
-
-      expect(response).to have_http_status(:ok)
-    end
-    it "redirects for customer" do
-      sign_in customer
-      get "/customers/#{customer.id}"
-      # Customer is redirected because authenticate_pros? only allows mechanics
-      expect(response).to be_redirect
+      it 'returns 200' do
+        expect(response).to have_http_status(:ok)
+      end
     end
 
-    it "redirects with alert for mechanic when not found" do
-      sign_in mechanic
-      get "/customers/#{120}"
+    context 'when customer (redirect)' do
+      before do
+        sign_in customer
+        get '/customers'
+      end
 
-      expect(response).to redirect_to(customers_path)
-      expect(flash[:alert]).to eq("Customer not found.")
+      it 'redirects' do
+        expect(response).to be_redirect
+      end
     end
   end
 
-  describe "PATCH /customers/:id" do
-    it "redirects for mechanic" do
-      sign_in mechanic
-      patch "/customers/#{customer.id}", params: {
-        customer: {
-          name: "Demo"
+  describe 'GET /customers/:id' do
+    context 'when mechanic' do
+      before do
+        sign_in mechanic
+        get "/customers/#{customer.id}"
+      end
+
+      it 'returns 200' do
+        expect(response).to have_http_status(:ok)
+      end
+    end
+
+    context 'when customer (redirect)' do
+      before do
+        sign_in customer
+        get "/customers/#{customer.id}"
+      end
+
+      it 'redirects' do
+        expect(response).to be_redirect
+      end
+    end
+
+    context 'when mechanic and customer not found' do
+      before do
+        sign_in mechanic
+        get '/customers/120'
+      end
+
+      it 'redirects with alert' do
+        expect(response).to redirect_to(customers_path)
+        expect(flash[:alert]).to eq('Customer not found.')
+      end
+    end
+  end
+
+  describe 'PATCH /customers/:id' do
+    context 'when mechanic (redirect)' do
+      before do
+        sign_in mechanic
+        patch "/customers/#{customer.id}", params: {
+          customer: { name: 'Demo' }
         }
-      }
-      # Devise redirects to root or previous page for unauthorized users
-      expect(response).to be_redirect
+      end
+
+      it 'redirects' do
+        expect(response).to be_redirect
+      end
     end
-    it "returns success for valid update" do
-      sign_in customer
-      patch "/customers/#{customer.id}", params: {
-        customer: {
-          name: "Demo"
+
+    context 'when customer (success)' do
+      before do
+        sign_in customer
+        patch "/customers/#{customer.id}", params: {
+          customer: { name: 'Demo' }
         }
-      }
-      expect(response).to redirect_to(root_path)
-      expect(flash[:notice]).to eq("Customer updated successfully.")
-    end
-    it "redirects with alert when customer not found" do
-      sign_in customer
-      patch "/customers/#{120}"
+      end
 
-      expect(response).to redirect_to(root_path)
+      it 'redirects to root with notice' do
+        expect(response).to redirect_to(root_path)
+        expect(flash[:notice]).to eq('Customer updated successfully.')
+      end
+    end
+
+    context 'when customer and customer not found' do
+      before do
+        sign_in customer
+        patch '/customers/120'
+      end
+
+      it 'redirects to root' do
+        expect(response).to redirect_to(root_path)
+      end
     end
   end
 
-  describe "PATCH /customers/:id/disable" do
-    it "redirects for mechanic" do
-      sign_in mechanic
-      patch "/customers/#{customer.id}/disable"
-      # Devise redirects to root or previous page for unauthorized users
-      expect(response).to be_redirect
-    end
-    it "redirects successfully for customer" do
-      sign_in customer
-      patch "/customers/#{customer.id}/disable"
-      expect(response).to redirect_to(root_path)
-      expect(flash[:notice]).to eq("Customer disabled successfully.")
-    end
-    it "redirects with alert if invalid id" do
-      sign_in customer
-      patch "/customers/#{120}/disable"
+  describe 'PATCH /customers/:id/disable' do
+    context 'when mechanic (redirect)' do
+      before do
+        sign_in mechanic
+        patch "/customers/#{customer.id}/disable"
+      end
 
-      expect(response).to redirect_to(root_path)
+      it 'redirects' do
+        expect(response).to be_redirect
+      end
+    end
+
+    context 'when customer (success)' do
+      before do
+        sign_in customer
+        patch "/customers/#{customer.id}/disable"
+      end
+
+      it 'redirects to root with notice' do
+        expect(response).to redirect_to(root_path)
+        expect(flash[:notice]).to eq('Customer disabled successfully.')
+      end
+    end
+
+    context 'when customer and invalid id' do
+      before do
+        sign_in customer
+        patch '/customers/120/disable'
+      end
+
+      it 'redirects to root' do
+        expect(response).to redirect_to(root_path)
+      end
     end
   end
 
-  describe "PATCH /customers/:id/unlock" do
-    it "redirects successfully for customer" do
-      sign_in customer
-      customer.lock_access!
-      patch "/customers/#{customer.id}/unlock"
-      expect(response).to redirect_to(new_customer_session_path)
-    end
-    it "redirects with alert if invalid id" do
-      sign_in customer
-      patch "/customers/#{120}/unlock"
+  describe 'PATCH /customers/:id/unlock' do
+    context 'when customer (success)' do
+      before do
+        sign_in customer
+        customer.lock_access!
+        patch "/customers/#{customer.id}/unlock"
+      end
 
-      expect(response).to redirect_to(root_path)
+      it 'redirects to new_customer_session_path' do
+        expect(response).to redirect_to(new_customer_session_path)
+      end
+    end
+
+    context 'when customer and invalid id' do
+      before do
+        sign_in customer
+        patch '/customers/120/unlock'
+      end
+
+      it 'redirects with alert' do
+        expect(response).to redirect_to(root_path)
+      end
     end
   end
 end
+

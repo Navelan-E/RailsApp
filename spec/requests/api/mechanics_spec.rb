@@ -307,59 +307,86 @@ let(:c_token) do
   end
 
   describe "Patch /api/v1/mechanics/#id/unlock" do
-    it "patch status ok for mechanic" do
+    before do
       mechanic.lock_access!
-      patch "/api/v1/mechanics/#{mechanic.id}/unlock", headers: {
-        "Authorization" => "Bearer #{m_token}"
-      }
-      expect(response).to have_http_status(:ok)
+      patch "/api/v1/mechanics/#{id}/unlock", headers: {
+          "Authorization" => "Bearer #{m_token}"
+        }
     end
-    it "patch status not found if invalid id" do
-      patch "/api/v1/mechanics/#{120}/unlock", headers: {
-        "Authorization" => "Bearer #{m_token}"
-      }
-
-      expect(response).to have_http_status(:not_found)
-      json = JSON.parse(response.body)
-      expect(json["error"]).to eq("Mechanic not found.")
+    context "Authendicate as Mechanic" do
+      let(:id) { mechanic.id }
+      it "patch status ok" do
+        expect(response).to have_http_status(:ok)
+      end
+    end
+    context "Authendicate as Mechanic" do
+      let(:id) { 120 }
+      it "patch status not found if invalid id", :aggregate_failures do
+        expect(response).to have_http_status(:not_found)
+        json = JSON.parse(response.body)
+        expect(json["error"]).to eq("Mechanic not found.")
+      end
     end
   end
 
   describe "Delete /api/v1/mechanics/#id/" do
-    it "delete status none for mechanic" do
-      mechanic.lock_access!
-      id = mechanic.id
-      delete "/api/v1/mechanics/#{id}", headers: {
-        "Authorization" => "Bearer #{m_token}"
-      }
-      expect(Mechanic.find_by(id: id)).to eq(nil)
+    before do
+     delete "/api/v1/mechanics/#{id}", headers: {
+          "Authorization" => "Bearer #{m_token}"
+        }
     end
-
-    it "returns 422 when destroy fails" do
+    context "Authendicate as Mechanic" do
+      let(:id) { mechanic.id }
+      it "delete status none for mechanic" do
+        expect(Mechanic.find_by(id: id)).to eq(nil)
+      end
+    end
+    context "Authendicate as Mechanic" do
+      let(:id){ 120 }
+      it "patch status not found if invalid id", :aggregate_failures do
+        expect(response).to have_http_status(:not_found)
+        json = JSON.parse(response.body)
+        expect(json["error"]).to eq("Mechanic not found.")
+      end
+    end
+  end
+  describe "Delete /api/v1/mechanics/#id/" do
+    before do
       allow(Mechanic).to receive(:find_by).and_return(mechanic)
 
-      allow(mechanic).to receive(:destroy).and_return(false)
-      allow(mechanic).to receive(:errors)
-        .and_return(double(full_messages: ["Cannot delete mechanic"]))
+        allow(mechanic).to receive(:destroy).and_return(false)
+        allow(mechanic).to receive(:errors)
+          .and_return(double(full_messages: ["Cannot delete mechanic"]))
 
-      delete "/api/v1/mechanics/#{mechanic.id}", headers: {
-        "Authorization" => "Bearer #{m_token}"
-      }
-
-      expect(response).to have_http_status(:unprocessable_entity)
-
-      json = JSON.parse(response.body)
-      expect(json["errors"]).to include("Cannot delete mechanic")
+        delete "/api/v1/mechanics/#{mechanic.id}", headers: {
+          "Authorization" => "Bearer #{m_token}"
+        }
     end
-
-    it "patch status not found if invalid id" do
-      delete "/api/v1/mechanics/#{120}", headers: {
-        "Authorization" => "Bearer #{m_token}"
+    context "Authendicate as Mechanic", :aggrrgate_failure do
+      it "returns 422 when destroy fails" do
+        expect(response).to have_http_status(:unprocessable_entity)
+        json = JSON.parse(response.body)
+        expect(json["errors"]).to include("Cannot delete mechanic")
+      end
+    end
+  end
+    describe "Post /api/v1/mechanics/" do
+    before do
+      get "/api/v1/mechanics/available", headers: {
+        "Authorization" => "Bearer #{token}"
       }
-
-      expect(response).to have_http_status(:not_found)
-      json = JSON.parse(response.body)
-      expect(json["error"]).to eq("Mechanic not found.")
+    end
+    context "Authendicated as customer" do
+      let(:token){ c_token }
+      it "get status forbidden" do
+        expect(response).to have_http_status(:ok)
+      end
+    end
+    context "Authendicated as mechanic" do
+      let(:token) { m_token }
+      it "get status ok" do
+        expect(response).to have_http_status(:ok)
+      end
     end
   end
 end

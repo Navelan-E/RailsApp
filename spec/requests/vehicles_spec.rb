@@ -32,41 +32,64 @@ RSpec.describe "Vehicles", type: :request do
   end
 
   describe "GET /vehicles" do
-    it "get status ok for mechanic" do
-      sign_in mechanic
-      get '/vehicles'
+    context "when 200 (authenticated as mechanic)" do
+      before do
+        sign_in mechanic
+        get '/vehicles'
+      end
 
-      expect(response).to have_http_status(:ok)
+      it "returns ok" do
+        expect(response).to have_http_status(:ok)
+      end
     end
 
-    it "get status ok for customer" do
-      sign_in customer
-      get '/vehicles'
+    context "when 200 (authenticated as customer)" do
+      before do
+        sign_in customer
+        get '/vehicles'
+      end
 
-      expect(response).to have_http_status(:ok)
+      it "returns ok" do
+        expect(response).to have_http_status(:ok)
+      end
     end
 
-    it "redirects for unauthenticated user" do
-      get '/vehicles'
-      expect(response).to be_redirect
+    context "when redirected (unauthenticated)" do
+      before do
+        get '/vehicles'
+      end
+
+      it "redirects" do
+        expect(response).to be_redirect
+      end
     end
   end
+
 
   describe "GET /vehicles/:id" do
-    it "get status ok for mechanic" do
-      sign_in mechanic
-      get "/vehicles/#{vehicle.id}", params: { format: vehicle.id }
+    context "when 200 (authenticated as mechanic)" do
+      before do
+        sign_in mechanic
+        get "/vehicles/#{vehicle.id}", params: { format: vehicle.id }
+      end
 
-      expect(response).to have_http_status(:ok)
+      it "returns ok" do
+        expect(response).to have_http_status(:ok)
+      end
     end
 
-    it "get status ok for customer" do
-      sign_in customer
-      get "/vehicles/#{vehicle.id}", params: { format: vehicle.id }
+    context "when 200 (authenticated as customer)" do
+      before do
+        sign_in customer
+        get "/vehicles/#{vehicle.id}", params: { format: vehicle.id }
+      end
 
-      expect(response).to have_http_status(:ok)
+      it "returns ok" do
+        expect(response).to have_http_status(:ok)
+      end
     end
   end
+
 
 
 

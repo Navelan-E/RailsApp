@@ -1,6 +1,6 @@
 class Api::V1::MechanicsController < Api::V1::BaseController
-    before_action -> { doorkeeper_authorize! :"mechanic:read" }, only: [ :index ]
-    before_action -> { doorkeeper_authorize! :"mechanic:write" }, except: [ :index ]
+    before_action -> { doorkeeper_authorize! :"mechanic:read" }, only: [ :index , :available]
+    before_action -> { doorkeeper_authorize! :"mechanic:write" }, except: [ :index, :available ]
 
     def index
         if params[:q].present?
@@ -102,5 +102,13 @@ class Api::V1::MechanicsController < Api::V1::BaseController
             render json: { error: "Mechanic not found."
             }, status: :not_found
         end
+    end
+
+    def available
+        assigned_ids = Record.where.not(mechanic_id: nil).pluck(:mechanic_id)
+
+        mechanics = Mechanic.where.not(id: assigned_ids)
+
+        render json: mechanics
     end
 end

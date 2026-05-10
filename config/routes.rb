@@ -85,6 +85,9 @@ Rails.application.routes.draw do
           patch :disable
           patch :unlock
         end
+        collection do
+          get :available
+        end
       end
       resources :customers do
     member do
