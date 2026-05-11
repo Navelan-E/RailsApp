@@ -210,9 +210,9 @@ let(:c_token) do
       }
       }
         it "get status ok" do
-          expect(response).to have_http_status(:created)
+          expect(response).to have_http_status(:ok)
           json = JSON.parse(response.body)
-          expect(json["message"]).to eq("Created Successfully")
+          expect(json["message"]).to eq("Invited Successfully")
         end
       end
 
@@ -227,11 +227,6 @@ let(:c_token) do
           }
         }
         }
-      it "get status ok if no password" do
-        expect(response).to have_http_status(:created)
-        json = JSON.parse(response.body)
-        expect(json["message"]).to eq("Created Successfully")
-      end
     end
     context "Authendicated as mechanic" do
         let(:token) { m_token }

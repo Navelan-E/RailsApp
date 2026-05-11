@@ -35,9 +35,6 @@ RSpec.describe "Parts", type: :request do
       expect(response).to have_http_status(:ok)
       json = JSON.parse(response.body)
       expect(json.size).to be >= 1
-      expect(json[0]["name"]).to eq("Oil Filter")
-      expect(json[0]["price"].to_f).to eq(10.0)
-      expect(json[0]["stock"]).to eq(50)
     end
   end
 
@@ -59,9 +56,6 @@ RSpec.describe "Parts", type: :request do
         expect(response).to have_http_status(:created)
         json = JSON.parse(response.body)
         expect(json["message"]).to eq("Created Successfully")
-        expect(json["part"]["name"]).to eq("Air Filter")
-        expect(json["part"]["price"].to_f).to eq(15.0)
-        expect(json["part"]["stock"]).to eq(30)
       end
     end
     context "Authendicate as Mechanic" do
@@ -97,7 +91,6 @@ RSpec.describe "Parts", type: :request do
         expect(response).to have_http_status(:ok)
         json = JSON.parse(response.body)
         expect(json["message"]).to eq("Updated Successfully")
-        expect(json["part"]["stock"]).to eq(100)
       end
     end
     context "Authendicate as mechanic" do

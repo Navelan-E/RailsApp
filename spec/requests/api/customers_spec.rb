@@ -72,10 +72,12 @@ let(:c_token) do
       it "get status ok for mechanic", :aggregate_failures do
         expect(response).to have_http_status(:ok)
         json = JSON.parse(response.body)
-        expect(json["id"]).to eq(customer.id)
-        expect(json["name"]).to eq(customer.name)
-        expect(json["email"]).to eq(customer.email)
-        expect(json["phone"]).to eq(customer.phone)
+        expect(json).to include(
+          "id" => customer.id,
+          "name" => customer.name,
+          "email" => customer.email,
+          "phone" => customer.phone
+        )
       end
     end
     context "when authenticated as a customer" do
@@ -84,10 +86,12 @@ let(:c_token) do
       it "get status ok for customer", :aggregate_failures do
         expect(response).to have_http_status(:ok)
         json = JSON.parse(response.body)
-        expect(json["id"]).to eq(customer.id)
-        expect(json["name"]).to eq(customer.name)
-        expect(json["email"]).to eq(customer.email)
-        expect(json["phone"]).to eq(customer.phone)
+        expect(json).to include(
+          "id" => customer.id,
+          "name" => customer.name,
+          "email" => customer.email,
+          "phone" => customer.phone
+        )
       end
     end
 
@@ -132,10 +136,12 @@ let(:c_token) do
       it "get status ok", :aggregate_failures do
         expect(response).to have_http_status(:ok)
         json = JSON.parse(response.body)
-        expect(json["id"]).to eq(customer.id)
-        expect(json["name"]).to eq(customer.name)
-        expect(json["email"]).to eq(customer.email)
-        expect(json["phone"]).to eq(customer.phone)
+        expect(json).to include(
+          "id" => customer.id,
+          "name" => customer.name,
+          "email" => customer.email,
+          "phone" => customer.phone
+        )
       end
     end
 
@@ -145,10 +151,12 @@ let(:c_token) do
       it "get status ok", :aggregate_failures do
         expect(response).to have_http_status(:ok)
         json = JSON.parse(response.body)
-        expect(json["id"]).to eq(customer.id)
-        expect(json["name"]).to eq(customer.name)
-        expect(json["email"]).to eq(customer.email)
-        expect(json["phone"]).to eq(customer.phone)
+        expect(json).to include(
+          "id" => customer.id,
+          "name" => customer.name,
+          "email" => customer.email,
+          "phone" => customer.phone
+        )
       end
     end
 

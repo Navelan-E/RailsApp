@@ -32,19 +32,31 @@ class Api::V1::MechanicsController < Api::V1::BaseController
     end
 
     def create
-        temp = mechanic_params
-        temp[:password] = "123456"
-        mechanic = Mechanic.new(temp)
-        if mechanic.save
+        mechanic = Mechanic.invite!(mechanic_params)
+
+        if mechanic.errors.empty?
             render json: {
-              message: "Created Successfully",
-              mechanic: mechanic
-            }, status: :created
+            message: "Invited Successfully"
+            }, status: :ok
         else
             render json: {
-              error: mechanic.errors.full_messages.join(", ")
+            error: "Error in inviting",
+            details: mechanic.errors.full_messages
             }, status: :unprocessable_entity
         end
+        # temp = mechanic_params
+        # temp[:password] = "123456"
+        # mechanic = Mechanic.new(temp)
+        # if mechanic.save
+        #     render json: {
+        #       message: "Created Successfully",
+        #       mechanic: mechanic
+        #     }, status: :created
+        # else
+        #     render json: {
+        #       error: mechanic.errors.full_messages.join(", ")
+        #     }, status: :unprocessable_entity
+        # end
     end
 
     def show

@@ -7,13 +7,7 @@ class Api::V1::RecordsController < Api::V1::BaseController
   after_action :create_service_tags, only: [:create]
   def index
     if params[:q].present?
-      vehicles = Vehicle.where("number_plate ILIKE ?", "%#{params[:q]}%")
-
-      if vehicles.exists?
-        record = Record.where(vehicle_id: vehicles.select(:id))
-      else
-        record = Record.none
-      end
+      record = Record.joins(:vehicle).where("vehicles.number_plate ILIKE ?", "%#{params[:q]}%")
     else
       record = Record.all
     end

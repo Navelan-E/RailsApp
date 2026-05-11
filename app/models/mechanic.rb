@@ -3,7 +3,7 @@ class Mechanic < ApplicationRecord
   # :confirmable, :lockable, :timeoutable, :trackable and :omniauthable
   devise :database_authenticatable, :registerable,
          :recoverable, :rememberable, :validatable,
-         :lockable
+         :lockable, :invitable
     validates :name, :experience, presence: true
     validates :experience, numericality: { only_integer: false }
     before_validation :ensure__values

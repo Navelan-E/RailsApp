@@ -2,7 +2,6 @@
 
 Doorkeeper.configure do
 
-  debug_token_scopes = true
   grant_flows %w[password client_credentials]
   # Change the ORM that doorkeeper will use (requires ORM extensions installed).
   # Check the list of supported ORMs here: https://github.com/doorkeeper-gem/doorkeeper#orms
@@ -356,7 +355,7 @@ Doorkeeper.configure do
   #   Doorkeeper::Errors::TokenForbidden, Doorkeeper::Errors::TokenExpired,
   #   Doorkeeper::Errors::TokenRevoked, Doorkeeper::Errors::TokenUnknown
   #
-  # handle_auth_errors :raise
+  handle_auth_errors :raise
   #
   # If you want to redirect back to the client application in accordance with
   # https://datatracker.ietf.org/doc/html/rfc6749#section-4.1.2.1, you can set
@@ -463,19 +462,31 @@ Doorkeeper.configure do
   # application needs advanced customization or logging:
   #
   before_successful_strategy_response do |request|
-    Rails.logger.info("hlooooooo #{request}")
-    owner = request.resource_owner
-    Rails.logger.info("hlooooooo #{owner}")
-    scope = "public "
-    scope +=
-      case owner
-      when Mechanic
-        "customer:read mechanic:write mechanic:read part:write record:read record:write review:read vehicle:read"
-      when Customer
-        "customer:write customer:read mechanic:read record:read review:write review:read vehicle:write vehicle:read"
-      end
+    Rails.logger.info("request => #{request.class.name}")
 
-    request.access_token.update!(scopes: scope.to_s)
+    scope = "public "
+
+    if request.respond_to?(:resource_owner)
+      owner = request.resource_owner
+
+      Rails.logger.info("owner => #{owner}")
+
+      scope +=
+        case owner
+        when Mechanic
+          "customer:read mechanic:write mechanic:read part:write record:read record:write review:read vehicle:read"
+
+        when Customer
+          "customer:write customer:read mechanic:read record:read review:write review:read vehicle:write vehicle:read"
+
+        else
+          ""
+        end
+    else
+      Rails.logger.info("client_credentials flow detected")
+    end
+
+    request.access_token.update!(scopes: scope.strip)
   end
   #
   # after_successful_strategy_response do |request, response|

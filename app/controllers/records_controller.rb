@@ -7,13 +7,7 @@ class RecordsController < ApplicationController
   after_action :create_service_tags, only: [:create]
   def index
     if params[:q].present?  && params[:q]!= ''
-      vehicles = Vehicle.where("number_plate ILIKE ?", "%#{params[:q]}%")
-
-      if vehicles.exists?
-        @records = Record.where(vehicle_id: vehicles.select(:id))
-      else
-        @records = Record.none
-      end
+      @records = Record.joins(:vehicle).where("vehicles.number_plate ILIKE ?", "%#{params[:q]}%")
     else
       @records = Record.all
     end
@@ -83,7 +77,6 @@ class RecordsController < ApplicationController
   def create_vehicle_customer_and_tags
     rp = record_params
     puts "Record Params: #{rp}"
-    
     @customer = Customer.find_by(phone: rp[:customer_phone])
     unless @customer
       temp_password = "123456"
