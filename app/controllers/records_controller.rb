@@ -2,9 +2,7 @@ class RecordsController < ApplicationController
   before_action :any_signed_in?
   before_action :authenticate_pros?, except: [:index, :show]
   before_action :set_record, only: [:edit, :update, :show]
-  before_action :create_vehicle_customer_and_tags, only: [:create]
   before_action :set_parts, only: [:update]
-  after_action :create_service_tags, only: [:create]
   def index
     if params[:q].present?  && params[:q]!= ''
       @records = Record.joins(:vehicle).where("vehicles.number_plate ILIKE ?", "%#{params[:q]}%")
@@ -21,14 +19,17 @@ class RecordsController < ApplicationController
   end
 
   def create
+    service = RecordService.new(record: nil, params: params)
+    result = service.create_vehicle_customer_and_tags
     rp = record_params
     @record = Record.new(
       internal_notes: rp[:internal_notes],
-      vehicle_id: @vehicle.id,
+      vehicle_id: result[:vehicle].id,
       status: "pending",
     )
 
     if @record.save
+      RecordService.new(record: @record, params: params).create_service_tags
       redirect_to records_path, notice: "Record created successfully"
     else
       flash.now[:alert] = @record.errors.full_messages.join(", ")
@@ -42,6 +43,7 @@ class RecordsController < ApplicationController
   end
 
   def update
+    RecordService.new(record: @record, params: params).set_parts
     @parts = Part.all
     param = params[:record].permit(:internal_notes, :status, :mechanic_id, :total_cost)
     puts "Update Params: #{param}"
@@ -74,39 +76,6 @@ class RecordsController < ApplicationController
     @mechanics = Mechanic.all
   end
 
-  def create_vehicle_customer_and_tags
-    rp = record_params
-    puts "Record Params: #{rp}"
-    @customer = Customer.find_by(phone: rp[:customer_phone])
-    unless @customer
-      temp_password = "123456"
-      @customer = Customer.new(
-        name: rp[:customer_name],
-        email: rp[:customer_email],
-        phone: rp[:customer_phone],
-        password: temp_password,
-        password_confirmation: temp_password
-      )
-      unless @customer.save
-        flash[:alert] = "Customer could not be created: #{@customer.errors.full_messages.join(', ')}"
-        redirect_to new_record_path and return
-      end
-    end
-
-    @vehicle = Vehicle.find_by(number_plate: rp[:vehicle_no])
-    unless @vehicle
-      @vehicle = Vehicle.new(
-        number_plate: rp[:vehicle_no],
-        model: rp[:model],
-        customer_id: @customer.id
-      )
-      unless @vehicle.save
-        flash[:alert] = "Vehicle could not be created: #{@vehicle.errors.full_messages.join(', ')}"
-        redirect_to new_record_path and return
-      end
-    end
-  end
-
   def set_parts
     part_id = params.dig(:record, :part_id)
     quantity = params.dig(:record, :part_quantity)
@@ -120,21 +89,5 @@ class RecordsController < ApplicationController
     else
       flash.now[:alert] = "Failed to update part stock."
     end
-  end
-
-  def create_service_tags
-    rp = record_params
-    valid_tag_ids = rp[:tag_ids].reject(&:blank?)
-    @tags = valid_tag_ids.present? ? Tag.where(id: valid_tag_ids).to_a : []
-    puts("Selected Tag IDs: #{@tags}")
-    if rp[:custom_tags].present?
-      custom_tags = rp[:custom_tags].split(",").map(&:strip).reject(&:empty?)
-      puts( "Custom Tags: #{custom_tags}" )
-      custom_tags.each do |tag_name|
-        tag = Tag.find_or_create_by!(tag: tag_name)
-        @tags << tag unless @tags.include?(tag)
-      end
-    end
-    @record.tags = @tags
   end
 end
